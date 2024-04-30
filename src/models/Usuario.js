@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { connection } = require("../database/connection");
 
 
-const Usuario = connection.define('usuario', {
+const Usuario = connection.define("usuario", {
     nome: {
         type: DataTypes.STRING,
         allowNull: false
@@ -12,7 +12,7 @@ const Usuario = connection.define('usuario', {
         allowNull: false
     },
     cpf: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true
     },
@@ -27,6 +27,10 @@ const Usuario = connection.define('usuario', {
     },
     senha: {
         type: DataTypes.STRING,
+        allowNull: false
+    },
+    data_nascimento: {
+        type: DataTypes.DATE,
         allowNull: false
     }
 })
