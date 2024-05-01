@@ -14,7 +14,7 @@ class UsuarioController {
             const { nome } = req.body
             const { sexo } = req.body
             const { cpf } = req.body
-            const { endereco } = req.body
+            const { endereco_id } = req.body
             const { email } = req.body
             const { senha } = req.body
             const { data_nascimento } = req.body
@@ -23,7 +23,7 @@ class UsuarioController {
                 nome: nome,
                 sexo: sexo,
                 cpf: cpf,
-                endereco: endereco,
+                endereco_id: endereco_id,
                 email: email,
                 senha: senha,
                 data_nascimento: data_nascimento
