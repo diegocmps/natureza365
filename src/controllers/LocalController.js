@@ -53,6 +53,17 @@ class LocalController{
     }
 
     async deletar(req, res){
+        const {id} = req.params
+
+        const local = Local.destroy({
+            where: {
+
+                id:id
+            }
+        })
+        
+        res.status(204).json({})
+
         
     }
 

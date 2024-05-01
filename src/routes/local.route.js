@@ -7,6 +7,6 @@ const localRoutes = Router()
 localRoutes.get('/', LocalController.listar)
 localRoutes.post('/', LocalController.cadastrar)
 localRoutes.put('/:id', LocalController.atualizar)
-localRoutes.delete('/:id',)
+localRoutes.delete('/:id', LocalController.deletar)
 
 module.exports =  localRoutes
