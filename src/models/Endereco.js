@@ -39,3 +39,5 @@ const Endereco = connection.define('enderecos', {
     }
 
 })
+
+module.exports = Endereco
