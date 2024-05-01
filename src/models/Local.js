@@ -2,10 +2,10 @@ const { DataTypes } = require("sequelize");
 const { connection } = require("../database/connection");
 
 
-const Local = connection.define('local', {
+const Local = connection.define('locais', {
 
 
-    local_id:{
+    usuario_id:{
         type: DataTypes.INTEGER,
         allowNull: false
     },
