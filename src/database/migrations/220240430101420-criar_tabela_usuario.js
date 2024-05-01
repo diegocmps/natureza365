@@ -28,9 +28,13 @@ module.exports = {
         unique: true
       },
 
-      endereco: {
+      endereco_id: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'enderecos',
+          key: 'id'
+        }
       },
       email: {
         allowNull: false,
