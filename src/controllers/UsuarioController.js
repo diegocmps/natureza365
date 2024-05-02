@@ -60,15 +60,25 @@ class UsuarioController {
 
     async deletar(req, res) {
         const { id } = req.params
-
+    
+        const usuario = await Usuario.findOne({
+            where: {
+                id: id
+            }
+        })
+    
+        if (!usuario) {
+            return res.status(404).json({message: 'Usuário não existe.'})
+        }
+    
         await Usuario.destroy({
             where: {
                 id: id
             }
         })
-
-        res.status(204).json({})
-    }    
+    
+        res.status(200).json({message: 'Usuário deletado com sucesso.'})
+    }   
 }
 
 module.exports = new UsuarioController
