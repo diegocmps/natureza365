@@ -17,7 +17,7 @@ class LocalController{
         const {localidade} = req.body
         const {coord_geo} = req.body
 
-        const local = Local.create({
+        Local.create({
             usuario_id: usuario_id,
             nome_local: nome_local,
             descricao: descricao,
@@ -25,7 +25,7 @@ class LocalController{
             coord_geo: coord_geo
         })
 
-        res.status(201).json(local)
+        res.status(201).json({message: 'Local cadastrado com sucesso.'})
         
     }
 
