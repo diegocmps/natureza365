@@ -1,21 +1,36 @@
 const Local = require("../models/Local");
 
-class LocalController{
+class LocalController {
 
-    async listar(req, res){
+    async locaisDoUsuario(req, res) {
+
+        const { usuario_id } = req.params
+
+
+        const local = await Local.findAll({
+            where: { usuario_id }
+        })
+
+        res.json(local)
+
+    }
+
+
+
+    async listar(req, res) {
         const local = await Local.findAll()
 
         res.json(local)
 
     }
 
-    async cadastrar(req, res){
+    async cadastrar(req, res) {
 
-        const {usuario_id} = req.body
-        const {nome_local} = req.body
-        const {descricao} = req.body
-        const {localidade} = req.body
-        const {coord_geo} = req.body
+        const { usuario_id } = req.body
+        const { nome_local } = req.body
+        const { descricao } = req.body
+        const { localidade } = req.body
+        const { coord_geo } = req.body
 
         Local.create({
             usuario_id: usuario_id,
@@ -25,12 +40,12 @@ class LocalController{
             coord_geo: coord_geo
         })
 
-        res.status(201).json({message: 'Local cadastrado com sucesso.'})
-        
+        res.status(201).json({ message: 'Local cadastrado com sucesso.' })
+
     }
 
-    async atualizar(req, res){
-        
+    async atualizar(req, res) {
+
         const { id } = req.params
         const data = req.body
 
@@ -49,22 +64,22 @@ class LocalController{
             res.status(500).json({ error: "Erro ao atualizar o local." })
 
         }
-        
+
     }
 
-    async deletar(req, res){
-        const {id} = req.params
+    async deletar(req, res) {
+        const { id } = req.params
 
         const local = Local.destroy({
             where: {
 
-                id:id
+                id: id
             }
         })
-        
+
         res.status(204).json({})
 
-        
+
     }
 
 }
