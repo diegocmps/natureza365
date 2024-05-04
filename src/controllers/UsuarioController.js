@@ -9,6 +9,8 @@ class UsuarioController {
 
     async cadastrar(req, res) {
 
+        try {
+
             const { nome } = req.body
             const { sexo } = req.body
             const { cpf } = req.body
@@ -28,6 +30,14 @@ class UsuarioController {
             })
 
             res.status(201).json(usuario)
+
+            
+        } catch (error) {
+
+            res.status(500).json({message: 'Não foi possível realizar o cadastro.'})
+            
+        }
+
 
 
 
