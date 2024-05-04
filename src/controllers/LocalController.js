@@ -2,7 +2,15 @@ const Local = require("../models/Local");
 
 class LocalController {
 
-    async locaisDoUsuario(req, res) {
+    async listaMestra(req, res) {
+
+        const local = await Local.findAll()
+
+        res.json(local)
+
+    }
+
+    async listar(req, res) {
 
         const { usuario_id } = req.params
 
@@ -15,14 +23,19 @@ class LocalController {
 
     }
 
+    async listarUm(req, res) {
 
-
-    async listar(req, res) {
-        const local = await Local.findAll()
-
+        const { usuario_id, local_id } = req.params
+    
+        const local = await Local.findOne({
+            where: { id: local_id, usuario_id }
+        })
+    
         res.json(local)
-
+    
     }
+
+
 
     async cadastrar(req, res) {
 
