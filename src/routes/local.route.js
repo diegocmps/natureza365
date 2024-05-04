@@ -10,7 +10,7 @@ localRoutes.get('/', LocalController.listaMestra)
 localRoutes.get('/:usuario_id', auth, LocalController.listar)
 localRoutes.get('/:usuario_id/:local_id', auth, LocalController.listarUm)
 localRoutes.post('/', validarLocal(localSchema), LocalController.cadastrar)
-localRoutes.put('/:id', LocalController.atualizar)
-localRoutes.delete('/:id', LocalController.deletar)
+localRoutes.put('/:id', auth, LocalController.atualizar)
+localRoutes.delete('/:id', auth, LocalController.deletar)
 
 module.exports =  localRoutes
