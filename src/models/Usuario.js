@@ -16,8 +16,8 @@ const Usuario = connection.define("usuario", {
         allowNull: false,
         unique: true
     },
-    endereco_id: {
-        type: DataTypes.INTEGER,
+    endereco: {
+        type: DataTypes.STRING,
         allowNull: false
     },
     email: {
