@@ -55,19 +55,35 @@ class LocalController {
 
         res.status(201).json({ message: 'Local cadastrado com sucesso.' })
 
+        try {
+            
+        } catch (error) {
+
+            res.status(500).json({message: 'Não foi possível realizar o cadastro'})
+            
+        }
+
+
+
     }
 
     async atualizar(req, res) {
 
-        const { id } = req.params
-        const data = req.body
+        const { usuario_id, id } = req.params
+        const { nome_local, descricao, localidade, coord_geo } = req.body
+        const local = await Local.findOne({ where: {usuario_id, id}})
+
+        if (!local) {
+            return res.status(403).json({ error: 'Você não tem permissão para atualizar este local.' });
+        }   
 
         try {
-            const [updated] = await Local.update(
-                data, {
-                where: { id: id }
-
-            })
+            await local.update({
+                nome_local: nome_local,
+                descricao: descricao,
+                localidade: localidade,
+                coord_geo: coord_geo
+            });
 
             res.status(200).json({ message: "Local atualizado com sucesso." })
 
@@ -81,7 +97,17 @@ class LocalController {
     }
 
     async deletar(req, res) {
-        const { id } = req.params
+        const { usuario_id, id } = req.params
+        
+        const usuario = await Local.findOne({where: {usuario_id, id}})
+
+        if (!usuario) {
+            return res.status(403).json({ error: 'Você não tem permissão para deletar este local.' });
+        } 
+
+        
+
+        
 
         const local = Local.destroy({
             where: {

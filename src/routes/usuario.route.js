@@ -9,13 +9,14 @@ const { auth } = require("../middleware/auth");
 
 
 
+
 const usuarioRoutes = Router()
 
 
 usuarioRoutes.get('/', auth, UsuarioController.listar)
 usuarioRoutes.post('/', validarUsuario(usuarioSchema), UsuarioController.cadastrar)
-usuarioRoutes.put('/:id',atualizarUsuario(usuarioSchema), UsuarioController.atualizar)
-usuarioRoutes.delete('/:id', UsuarioController.deletar)
+usuarioRoutes.put('/:id', auth, atualizarUsuario(usuarioSchema), UsuarioController.atualizar)
+usuarioRoutes.delete('/:id', auth, UsuarioController.deletar)
 
 
 
