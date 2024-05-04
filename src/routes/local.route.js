@@ -3,10 +3,6 @@ const LocalController = require("../controllers/LocalController");
 const validarLocal = require("../services/validarLocal");
 const localSchema = require("../services/localSchema");
 
-
-
-
-
 const localRoutes = Router()
 
 localRoutes.get('/', LocalController.listar)

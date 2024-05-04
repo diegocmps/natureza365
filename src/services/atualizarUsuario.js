@@ -1,4 +1,4 @@
-const Endereco = require("../models/Endereco");
+
 const Usuario = require("../models/Usuario");
 const Yup = require('yup')
 
@@ -6,11 +6,6 @@ const Yup = require('yup')
 function atualizarUsuario(esquema) {
     return function (req, res, next) {
 
-        Endereco.findByPk(req.body.endereco_id)
-            .then(endereco => {
-                if (!endereco) {
-                    return res.status(404).json({ error: 'Endereço não encontrado.' });
-                }
 
                 Usuario.findByPk(req.params.id)
                     .then(usuario => {
@@ -67,11 +62,8 @@ function atualizarUsuario(esquema) {
                                 res.status(status).json({ error: error.message });
                             });
                     });
-            })
-            .catch(error => {
-                res.status(500).json({ error: 'Ocorreu um erro ao processar sua solicitação.' });
-            });
-    }
+
+}
 }
 
 module.exports = atualizarUsuario
