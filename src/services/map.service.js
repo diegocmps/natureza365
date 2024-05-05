@@ -15,4 +15,18 @@ async function openStreetMap(cep) {
     }
 }
 
-module.exports = openStreetMap;
+async function linkGoogleMap(cep){
+    const coordenadas = await openStreetMap(cep)
+
+    if(coordenadas) {
+
+        const link = `https://www.google.com/maps/search/?api=1&query=${coordenadas.lat},${coordenadas.lon}`
+        return link
+    } else {
+        throw new Error('Não foi possível obter as coordeadas para este endereço.')
+    }
+
+
+}
+
+module.exports = {openStreetMap, linkGoogleMap};
