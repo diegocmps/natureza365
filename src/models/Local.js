@@ -17,6 +17,10 @@ const Local = connection.define('locais', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    cep:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     localidade:{
         type: DataTypes.STRING,
         allowNull: false
