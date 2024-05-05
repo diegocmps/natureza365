@@ -1,4 +1,5 @@
 const Local = require("../models/Local");
+const openStreetMap = require("../services/map.service");
 
 class LocalController {
 
@@ -26,42 +27,62 @@ class LocalController {
     async listarUm(req, res) {
 
         const { usuario_id, local_id } = req.params
-    
+
         const local = await Local.findOne({
             where: { id: local_id, usuario_id }
         })
-    
+
         res.json(local)
-    
+
     }
 
 
 
     async cadastrar(req, res) {
 
-        const { usuario_id } = req.body
-        const { nome_local } = req.body
-        const { descricao } = req.body
-        const { localidade } = req.body
-        const { coord_geo } = req.body
-
-        Local.create({
-            usuario_id: usuario_id,
-            nome_local: nome_local,
-            descricao: descricao,
-            localidade: localidade,
-            coord_geo: coord_geo
-        })
-
-        res.status(201).json({ message: 'Local cadastrado com sucesso.' })
-
         try {
+            const { usuario_id } = req.body
+            const { nome_local } = req.body
+            const { descricao } = req.body
+            const { cep } = req.body
+            let localidade = ""
+            const { coord_geo } = req.body
+    
+    
+            if (!cep){
+                return res.status(400).json({message: 'O CEP é obrigatório'})
+            }
+    
+            let resposta = await openStreetMap(cep)
+            console.log(resposta)
+            localidade = resposta.display_name
+    
+    
+    
+            Local.create({
+                usuario_id: usuario_id,
+                nome_local: nome_local,
+                descricao: descricao,
+                cep: cep,
+                localidade: localidade,
+                coord_geo: coord_geo
+            })
+
+
+    
+            res.status(201).json({ message: 'Local cadastrado com sucesso.' })
+    
             
         } catch (error) {
 
-            res.status(500).json({message: 'Não foi possível realizar o cadastro'})
-            
+            console.log(error.message)
+
+            res.status(500).json({ message: 'Não foi possível realizar o cadastro' })
         }
+
+
+
+
 
 
 
@@ -71,11 +92,11 @@ class LocalController {
 
         const { usuario_id, id } = req.params
         const { nome_local, descricao, localidade, coord_geo } = req.body
-        const local = await Local.findOne({ where: {usuario_id, id}})
+        const local = await Local.findOne({ where: { usuario_id, id } })
 
         if (!local) {
             return res.status(403).json({ error: 'Você não tem permissão para atualizar este local.' });
-        }   
+        }
 
         try {
             await local.update({
@@ -98,16 +119,16 @@ class LocalController {
 
     async deletar(req, res) {
         const { usuario_id, id } = req.params
-        
-        const usuario = await Local.findOne({where: {usuario_id, id}})
+
+        const usuario = await Local.findOne({ where: { usuario_id, id } })
 
         if (!usuario) {
             return res.status(403).json({ error: 'Você não tem permissão para deletar este local.' });
-        } 
+        }
 
-        
 
-        
+
+
 
         const local = Local.destroy({
             where: {
