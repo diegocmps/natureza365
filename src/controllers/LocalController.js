@@ -1,15 +1,24 @@
 const Local = require("../models/Local");
-const openStreetMap = require("../services/map.service");
+const { openStreetMap, linkGoogleMap } = require("../services/map.service");
 
 class LocalController {
 
-    async listaMestra(req, res) {
+    async listarGmaps(req, res) {
+        const { local_id } = req.params;
 
-        const local = await Local.findAll()
+        const local = await Local.findOne({
+            where: { id: local_id }
+        });
 
-        res.json(local)
+        if (local) {
+            res.json(local.coord_geo);
+        } else {
+            res.status(404).json({ message: 'Local não encontrado' });
+        }
 
     }
+
+
 
     async listar(req, res) {
 
@@ -45,34 +54,38 @@ class LocalController {
             const { nome_local } = req.body
             const { descricao } = req.body
             const { cep } = req.body
-            let localidade = ""
-            const { coord_geo } = req.body
-    
-    
-            if (!cep){
-                return res.status(400).json({message: 'O CEP é obrigatório'})
+
+
+            if (!cep) {
+                return res.status(400).json({ message: 'O CEP é obrigatório' })
             }
-    
+
+
             let resposta = await openStreetMap(cep)
+            let googleMap = await linkGoogleMap(cep)
+            console.log(googleMap)
             console.log(resposta)
-            localidade = resposta.display_name
-    
-    
-    
+            let localidade = resposta.display_name
+
+
+
+
+
+
             Local.create({
                 usuario_id: usuario_id,
                 nome_local: nome_local,
                 descricao: descricao,
                 cep: cep,
                 localidade: localidade,
-                coord_geo: coord_geo
+                coord_geo: googleMap
             })
 
 
-    
+
             res.status(201).json({ message: 'Local cadastrado com sucesso.' })
-    
-            
+
+
         } catch (error) {
 
             console.log(error.message)
