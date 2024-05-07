@@ -19,7 +19,6 @@ class LocalController {
     }
 
 
-
     async listar(req, res) {
 
         const { usuario_id } = req.params
@@ -51,9 +50,6 @@ class LocalController {
         try {
             const { usuario_id, nome_local, descricao, cep } = req.body;
 
-            if (!cep) {
-                return res.status(400).json({ message: 'O CEP é obrigatório' });
-            }
 
             const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
             if (localExistente) {

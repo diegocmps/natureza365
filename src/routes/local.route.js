@@ -1,8 +1,8 @@
 const { Router } = require("express");
 const LocalController = require("../controllers/LocalController");
-const validarLocal = require("../services/validarLocal");
-const localSchema = require("../services/localSchema");
 const { auth } = require("../middleware/auth");
+const validarLocal = require("../middleware/validarLocal");
+const localSchema = require("../schemas/localSchema");
 
 const localRoutes = Router()
 
