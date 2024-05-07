@@ -8,18 +8,20 @@ class UsuarioController {
     }
 
     async cadastrar(req, res) {
-
         try {
-
-            const { nome } = req.body
-            const { sexo } = req.body
-            const { cpf } = req.body
-            const { endereco } = req.body
-            const { email } = req.body
-            const { senha } = req.body
-            const { data_nascimento } = req.body
-
-            const usuario = await Usuario.create({
+            const { nome, sexo, cpf, endereco, email, senha, data_nascimento } = req.body;
+    
+            let usuario = await Usuario.findOne({ where: { cpf: cpf } });
+            if (usuario) {
+                throw new Error('CPF já cadastrado.');
+            }
+    
+            usuario = await Usuario.findOne({ where: { email: email } });
+            if (usuario) {
+                throw new Error('E-mail já cadastrado.');
+            }
+    
+            usuario = await Usuario.create({
                 nome: nome,
                 sexo: sexo,
                 cpf: cpf,
@@ -27,21 +29,14 @@ class UsuarioController {
                 email: email,
                 senha: senha,
                 data_nascimento: data_nascimento
-            })
-
-            res.status(201).json(usuario)
-
-            
+            });
+    
+            res.status(201).json(usuario);
         } catch (error) {
-
-            res.status(500).json({message: 'Não foi possível realizar o cadastro.'})
-            
-        }
-
-
-
-
+            res.status(500).json({message: error.message});
+        }    
     }
+
 
     async atualizar(req, res) {
 

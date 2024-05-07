@@ -1,28 +1,8 @@
 const Yup = require('yup');
-const Usuario = require('../models/Usuario');
 
 function validarUsuario(esquema) {
     return function (req, res, next) {
-
-        if (!req.body.cpf || !req.body.email) {
-            return res.status(400).json({ error: 'CPF e e-mail são obrigatórios.' });
-        }
-
-        Usuario.findOne({ where: { cpf: req.body.cpf } })
-        .then(usuario => {
-            if (usuario) {
-                return res.status(409).json({ error: 'CPF já cadastrado.' });
-            }
-
-            return Usuario.findOne({ where: { email: req.body.email } });
-        })
-        .then(usuario => {
-            if (usuario) {
-                return res.status(409).json({ error: 'E-mail já cadastrado.' });
-            }
-
-            return esquema.validate(req.body);
-        })
+        esquema.validate(req.body)
         .then(() => {
             next();
         })
