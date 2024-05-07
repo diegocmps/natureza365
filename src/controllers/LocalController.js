@@ -50,22 +50,22 @@ class LocalController {
     async cadastrar(req, res) {
         try {
             const { usuario_id, nome_local, descricao, cep } = req.body;
-    
+
             if (!cep) {
                 return res.status(400).json({ message: 'O CEP é obrigatório' });
             }
-    
+
             const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
             if (localExistente) {
                 return res.status(400).json({ message: 'Local já cadastrado.' });
             }
-    
+
             let resposta = await openStreetMap(cep);
             let googleMap = await linkGoogleMap(cep);
             console.log(googleMap);
             console.log(resposta);
             let localidade = resposta.display_name;
-    
+
             await Local.create({
                 usuario_id: usuario_id,
                 nome_local: nome_local,
@@ -74,15 +74,15 @@ class LocalController {
                 localidade: localidade,
                 coord_geo: googleMap
             });
-    
+
             res.status(201).json({ message: 'Local cadastrado com sucesso.' });
-    
+
         } catch (error) {
             console.log(error.message);
             res.status(500).json({ message: 'Não foi possível realizar o cadastro' });
         }
     }
-    
+
 
     async atualizar(req, res) {
 
@@ -126,14 +126,14 @@ class LocalController {
 
 
 
-        const local = Local.destroy({
+        Local.destroy({
             where: {
 
                 id: id
             }
         })
 
-        res.status(204).json({})
+        res.status(200).json({message: "Local deletado com sucesso."})
 
 
     }

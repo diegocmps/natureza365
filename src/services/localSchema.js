@@ -9,14 +9,13 @@ const localSchema = Yup.object().shape({
     nome_local: Yup.string()
     .required('O nome do local é obrigatório'),
 
-    localidade: Yup.string()
-    .required('A localidade é obrigatória.'),
+    cep: Yup.string()
+    .matches(/^\d{8}$/, 'CEP deve ter exatamente 8 dígitos.')
+    .required('O CEP é obrigatório'),
 
     descricao: Yup.string()
     .required('A descrição é obrigatória.'),
 
-    coord_geo: Yup.string()
-    .required('A coordenada é obrigatória.')
 
 })
 
