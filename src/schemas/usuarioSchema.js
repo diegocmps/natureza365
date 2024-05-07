@@ -23,7 +23,9 @@ const usuarioSchema = Yup.object().shape({
     .email('O e-mail deve conter um formato válido: example@email.com')
     .required('O e-mail é obrigatório.'),
 
-    senha: Yup.string().required('A senha é obrigatória.'),
+    senha: Yup.string()
+    .min(8, 'A senha deve ter pelo menos 8 caracteres.')
+    .required('A senha é obrigatória.'),
 
     data_nascimento: Yup.string()
     .matches(/^(19|20)\d\d-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, 'A data de nascimento deve estar no formato correto: aaaa-mm-dd.')

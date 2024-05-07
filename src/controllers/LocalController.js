@@ -90,6 +90,11 @@ class LocalController {
             return res.status(403).json({ error: 'Você não tem permissão para atualizar este local.' });
         }
 
+        const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
+        if (localExistente) {
+            return res.status(400).json({ message: 'Local já cadastrado.' });
+        }
+
         try {
             await local.update({
                 nome_local: nome_local,
