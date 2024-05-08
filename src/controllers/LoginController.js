@@ -24,22 +24,25 @@ class LoginController {
                     email: email
                 }
             })
-            if (!usuario) {
-                return res.status(400).json({ message: "Email ou senha inválidos" });
-            }
-    
-            const senhaCorreta = await compare(senha, usuario.senha)
-    
-            if (!senhaCorreta) {
-                return res.status(400).json({ message: "Email ou senha inválidos" });
-            }
 
+            if (!usuario) {
+                return res.status(400).json({ message: "E-mail ou senha incorretos." });
+            }            
             
+            const testeSenha = await compare(senha, usuario.senha)
+            
+            if(testeSenha === false) {
+                return res.status(400).json({message: 'E-mail ou senha incorretos.'})
+            }
+           
+
             const payload = {
                 sub: usuario.id,
                 email: usuario.email,
                 nome: usuario.nome
             }
+
+            
 
             const token = sign(payload, process.env.SECRET_JWT)
 
