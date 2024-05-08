@@ -15,24 +15,35 @@ class LoginController {
             const { email } = req.body
             const { senha } = req.body
 
+            if (!email || !senha) {
+                return res.status(400).json({ message: "Email e senha são necessários" });
+            }
+
             const usuario = await Usuario.findOne({
                 where: {
                     email: email
                 }
             })
+            if (!usuario) {
+                return res.status(400).json({ message: "Email ou senha inválidos" });
+            }
+    
+            const senhaCorreta = await compare(senha, usuario.senha)
+    
+            if (!senhaCorreta) {
+                return res.status(400).json({ message: "Email ou senha inválidos" });
+            }
 
-            const hashSenha = await compare(senha, usuario.senha)
-
+            
             const payload = {
                 sub: usuario.id,
                 email: usuario.email,
-                nome: usuario.nome }
+                nome: usuario.nome
+            }
 
             const token = sign(payload, process.env.SECRET_JWT)
 
-
-
-            res.status(201).json({Token: token})
+            res.status(201).json({ Token: token })
 
         } catch (error) {
 

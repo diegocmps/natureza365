@@ -134,7 +134,7 @@ class LocalController {
             }
         })
 
-        res.status(200).json({message: "Local deletado com sucesso."})
+        res.status(200).json({ message: "Local deletado com sucesso." })
 
 
     }
