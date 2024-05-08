@@ -16,3 +16,5 @@ usuarioRoutes.put('/:id', auth, atualizarUsuario(usuarioSchema), UsuarioControll
 usuarioRoutes.delete('/:id', auth, UsuarioController.deletar)
 
 module.exports = usuarioRoutes
+
+
