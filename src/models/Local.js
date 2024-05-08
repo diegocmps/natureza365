@@ -23,11 +23,11 @@ const Local = connection.define('locais', {
     },
     localidade:{
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     coord_geo:{
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     }
 
 })
