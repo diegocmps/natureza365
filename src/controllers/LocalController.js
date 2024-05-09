@@ -10,26 +10,30 @@ class LocalController {
             where: { id: local_id }
         });
 
-        if (local) {
-            res.json(local.coord_geo);
-        } else {
-            res.status(404).json({ message: 'Local não encontrado' });
+        if (!local) {
+            return res.status(404).json({ message: 'Local não encontrado' });
         }
 
+        if (req.payload.sub !== local.usuario_id) {
+            return res.status(403).json({ error: 'Você não tem permissão para acessar este local.' });
+        }
+
+        res.json(local.coord_geo);
     }
 
 
     async listar(req, res) {
-
-        const { usuario_id } = req.params
-
-
+        const usuario_id = Number(req.params.usuario_id);
+    
+        if (req.payload.sub !== usuario_id) {
+            return res.status(403).json({ error: 'Você não tem permissão para acessar estes locais.' });
+        }
+    
         const local = await Local.findAll({
             where: { usuario_id }
-        })
-
-        res.json(local)
-
+        });
+    
+        res.json(local);
     }
 
     async listarUm(req, res) {
@@ -39,6 +43,10 @@ class LocalController {
         const local = await Local.findOne({
             where: { id: local_id, usuario_id }
         })
+
+        if (req.payload.sub !== local.usuario_id) {
+            return res.status(403).json({ error: 'Você não tem permissão para acessar este local.' });
+        }
 
         res.json(local)
 
@@ -86,7 +94,7 @@ class LocalController {
         const { nome_local, descricao, localidade, coord_geo } = req.body
         const local = await Local.findOne({ where: { usuario_id, id } })
 
-        if (!local) {
+        if (req.payload.sub !== local.usuario_id) {
             return res.status(403).json({ error: 'Você não tem permissão para atualizar este local.' });
         }
 
@@ -119,13 +127,9 @@ class LocalController {
 
         const usuario = await Local.findOne({ where: { usuario_id, id } })
 
-        if (!usuario) {
+        if (req.payload.sub !== usuario.usuario_id) {
             return res.status(403).json({ error: 'Você não tem permissão para deletar este local.' });
         }
-
-
-
-
 
         Local.destroy({
             where: {
