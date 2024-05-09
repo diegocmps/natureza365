@@ -38,33 +38,46 @@ class UsuarioController {
     }
 
 
-    async atualizar(req, res) {
+async atualizar(req, res) {
+    const id = Number(req.params.id);
+    const data = req.body;
 
-        const { id } = req.params
-        const data = req.body
+    const validarUsuario =  req.payload.sub
 
-        try {
-            const [updated] = await Usuario.update(
-                data, {
-                where: { id: id }
-
-            })
-
-            res.status(200).json({ message: "Usuário atualizado com sucesso." })
-
-        } catch (error) {
-
-            console.log(error.message)
-            res.status(500).json({ error: "Erro ao atualizar o usuário." })
-
-        }
-
-
+    if(validarUsuario !== id){
+        return res.status(403).json({message: 'Você não tem permissão para atualizar este usuário.'})
 
     }
 
+    try {   
+
+        const [updated] = await Usuario.update(data, {
+            where: { id: id }
+        });
+
+        if (updated) {
+            
+            res.status(200).json({ message: "Usuário atualizado com sucesso." })
+            ;
+        } else {
+            res.status(404).json({ error: "Usuário não encontrado." });
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: "Erro ao atualizar o usuário." });
+    }
+}
+
     async deletar(req, res) {
-        const { id } = req.params
+        const id = Number(req.params.id)
+
+        const usuarioLogadoId = req.payload.sub
+
+    console.log(usuarioLogadoId)
+
+        if (usuarioLogadoId !== id) {
+            return res.status(403).json({message: 'Você não tem permissão para deletar este usuário.'})
+        }
     
         const usuario = await Usuario.findOne({
             where: {
