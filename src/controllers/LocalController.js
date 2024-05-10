@@ -98,7 +98,6 @@ class LocalController {
     }
     
     
-    
 
 
     async atualizar(req, res) {
@@ -117,13 +116,6 @@ class LocalController {
             return res.status(400).json({ message: 'Local já cadastrado.' });
         }
     
-        if(local.id !== Number(id)){
-            return res.status(400).json({message: 'Alteração de ID não permitida'})
-        }
-        
-        if(local.usuario_id !== Number(usuario_id)){
-            return res.status(400).json({message: 'Alteração de ID de usuário não permitida'})
-        }
     
         try {
 
@@ -136,7 +128,7 @@ class LocalController {
                 }
                 throw error;
             }
-            
+
             let googleMap = await linkGoogleMap(cep);
             let localidade = resposta.display_name;
     
