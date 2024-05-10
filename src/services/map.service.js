@@ -11,22 +11,23 @@ async function openStreetMap(cep) {
         }
     } catch (error) {
         console.error('Erro ao consultar o CEP:', error);
-        throw new Error('Erro ao processar a solicitação');
+        throw error;
     }
 }
 
 async function linkGoogleMap(cep){
-    const coordenadas = await openStreetMap(cep)
+    try {
+        const coordenadas = await openStreetMap(cep)
 
-    if(coordenadas) {
-
-        const link = `https://www.google.com/maps/search/?api=1&query=${coordenadas.lat},${coordenadas.lon}`
-        return link
-    } else {
-        throw new Error('Não foi possível obter as coordeadas para este endereço.')
+        if(coordenadas) {
+            const link = `https://www.google.com/maps/search/?api=1&query=${coordenadas.lat},${coordenadas.lon}`
+            return link
+        } else {
+            throw new Error('Não foi possível obter as coordeadas para este endereço.')
+        }
+    } catch (error) {
+        throw error;
     }
-
-
 }
 
 module.exports = {openStreetMap, linkGoogleMap};

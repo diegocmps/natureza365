@@ -1,4 +1,5 @@
 const Local = require("../models/Local");
+const Usuario = require("../models/Usuario");
 const { openStreetMap, linkGoogleMap } = require("../services/map.service");
 
 class LocalController {
@@ -54,28 +55,31 @@ class LocalController {
 
     async cadastrar(req, res) {
         try {
-            const { usuario_id } = req.body;
-            const { nome_local } = req.body;
-            const { descricao } = req.body;
-            const { cep } = req.body;
-
-
+            const { usuario_id, nome_local, descricao, cep } = req.body;
+    
             const usuario = await Usuario.findByPk(usuario_id);
             if (!usuario) {
                 return res.status(404).json({ error: 'Usuário não encontrado' });
             }
-
+    
             const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
             if (localExistente) {
                 return res.status(400).json({ message: 'Local já cadastrado.' });
             }
-
-            let resposta = await openStreetMap(cep);
+    
+            let resposta;
+            try {
+                resposta = await openStreetMap(cep);
+            } catch (error) {
+                if (error.message === 'CEP não encontrado') {
+                    return res.status(400).json({ message: 'CEP não encontrado' });
+                }
+                throw error;
+            }
+    
             let googleMap = await linkGoogleMap(cep);
-            console.log(googleMap);
-            console.log(resposta);
             let localidade = resposta.display_name;
-
+    
             await Local.create({
                 usuario_id: usuario_id,
                 nome_local: nome_local,
@@ -84,20 +88,22 @@ class LocalController {
                 localidade: localidade,
                 coord_geo: googleMap
             });
-
+    
             res.status(201).json({ message: 'Local cadastrado com sucesso.' });
-
+    
         } catch (error) {
             console.log(error.message);
             res.status(500).json({ message: 'Não foi possível realizar o cadastro' });
         }
     }
+    
+    
+    
 
 
     async atualizar(req, res) {
-
         const { usuario_id, id } = req.params
-        const { nome_local, descricao, localidade, coord_geo } = req.body
+        const { nome_local, descricao, cep } = req.body
     
         const local = await Local.findOne({ where: { id } })
     
@@ -110,7 +116,7 @@ class LocalController {
         if (localExistente && localExistente.id != id) {
             return res.status(400).json({ message: 'Local já cadastrado.' });
         }
-
+    
         if(local.id !== Number(id)){
             return res.status(400).json({message: 'Alteração de ID não permitida'})
         }
@@ -120,11 +126,26 @@ class LocalController {
         }
     
         try {
+
+            let resposta;
+            try {
+                resposta = await openStreetMap(cep);
+            } catch (error) {
+                if (error.message === 'CEP não encontrado') {
+                    return res.status(400).json({ message: 'CEP não encontrado' });
+                }
+                throw error;
+            }
+            
+            let googleMap = await linkGoogleMap(cep);
+            let localidade = resposta.display_name;
+    
             await local.update({
                 nome_local: nome_local,
                 descricao: descricao,
+                cep: cep,
                 localidade: localidade,
-                coord_geo: coord_geo
+                coord_geo: googleMap
             });
     
             res.status(200).json({ message: "Local atualizado com sucesso." })
@@ -137,6 +158,7 @@ class LocalController {
         }
     
     }
+    
     
 
     async deletar(req, res) {
