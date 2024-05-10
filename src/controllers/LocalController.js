@@ -155,22 +155,26 @@ class LocalController {
 
     async deletar(req, res) {
         const { usuario_id, id } = req.params
-
+    
         const usuario = await Local.findOne({ where: { usuario_id, id } })
-
+    
+        if (!usuario) {
+            return res.status(404).json({ error: 'Local não encontrado.' });
+        }
+    
         if (req.payload.sub !== usuario.usuario_id) {
             return res.status(403).json({ error: 'Você não tem permissão para deletar este local.' });
         }
-
+    
         Local.destroy({
             where: {
-
                 id: id
             }
         })
-
+    
         res.status(200).json({ message: "Local deletado com sucesso." })
     }
+    
 }
 
 module.exports = new LocalController
