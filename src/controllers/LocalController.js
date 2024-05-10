@@ -45,9 +45,15 @@ class LocalController {
             where: { id: local_id, usuario_id }
         })
 
+        
+        if(!local){
+            return res.status(403).json({message: 'Local não encontrado.'})
+        }
+
         if (req.payload.sub !== local.usuario_id) {
             return res.status(403).json({ error: 'Você não tem permissão para acessar este local.' });
         }
+
 
         res.json(local)
 
@@ -56,11 +62,15 @@ class LocalController {
     async cadastrar(req, res) {
         try {
             const { usuario_id, nome_local, descricao, cep } = req.body;
+
+            if (req.payload.sub !== Number(usuario_id)){
+                return res.status(403).json({message: 'Você não tem permissão para cadastrar este local.'})
+            }            
     
             const usuario = await Usuario.findByPk(usuario_id);
             if (!usuario) {
                 return res.status(404).json({ error: 'Usuário não encontrado' });
-            }
+            }            
     
             const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
             if (localExistente) {

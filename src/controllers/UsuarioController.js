@@ -48,7 +48,7 @@ class UsuarioController {
 
     async atualizar(req, res) {
         const id = Number(req.params.id);
-        const { data } = req.body;
+        const { nome, sexo, cpf, endereco, email, senha, data_nascimento } = req.body;
 
         const validarUsuario = req.payload.sub
 
@@ -57,26 +57,34 @@ class UsuarioController {
 
         }
 
-        if (data.cpf) {
-            const usuarioExistente = await Usuario.findOne({ where: { cpf: data.cpf } });
+        if (cpf) {
+            const usuarioExistente = await Usuario.findOne({ where: { cpf } });
             if (usuarioExistente && usuarioExistente.id !== id) {
                 return res.status(400).json({ message: 'CPF já está em uso.' });
             }
         }
 
-        if (data.email) {
-            const usuarioExistente = await Usuario.findOne({ where: { email: data.email } });
+        if (email) {
+            const usuarioExistente = await Usuario.findOne({ where: { email } });
             if (usuarioExistente && usuarioExistente.id !== id) {
                 return res.status(400).json({ message: 'E-mail já está em uso.' });
             }
         }
 
-        delete data.id //comando para impedir que o usuario altere a proprie id.
 
 
         try {
 
-            const [updated] = await Usuario.update(data, {
+            const [updated] = await Usuario.update({
+                nome,
+                sexo,
+                cpf,
+                endereco,
+                email,
+                senha,
+                data_nascimento
+                
+            }, {
                 where: { id: id }
             });
 
