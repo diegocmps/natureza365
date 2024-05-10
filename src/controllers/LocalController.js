@@ -24,7 +24,18 @@ class LocalController {
 
 
     async listar(req, res) {
+        
         const usuario_id = Number(req.params.usuario_id);
+
+        if (req.params.usuario_id === undefined) {
+            return res.status(400).json({ message: 'Usuário não localizado.' });
+        }
+
+        const usuario = await Usuario.findByPk(usuario_id);
+
+        if(!usuario){
+            return res.status(400).json({message: 'Usuário não encontrado.'})
+        }
 
         if (req.payload.sub !== usuario_id) {
             return res.status(403).json({ error: 'Você não tem permissão para acessar estes locais.' });
@@ -45,9 +56,9 @@ class LocalController {
             where: { id: local_id, usuario_id }
         })
 
-        
-        if(!local){
-            return res.status(403).json({message: 'Local não encontrado.'})
+
+        if (!local) {
+            return res.status(403).json({ message: 'Local não encontrado.' })
         }
 
         if (req.payload.sub !== local.usuario_id) {
@@ -63,20 +74,20 @@ class LocalController {
         try {
             const { usuario_id, nome_local, descricao, cep } = req.body;
 
-            if (req.payload.sub !== Number(usuario_id)){
-                return res.status(403).json({message: 'Você não tem permissão para cadastrar este local.'})
-            }            
-    
+            if (req.payload.sub !== Number(usuario_id)) {
+                return res.status(403).json({ message: 'Você não tem permissão para cadastrar este local.' })
+            }
+
             const usuario = await Usuario.findByPk(usuario_id);
             if (!usuario) {
                 return res.status(404).json({ error: 'Usuário não encontrado' });
-            }            
-    
+            }
+
             const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
             if (localExistente) {
                 return res.status(400).json({ message: 'Local já cadastrado.' });
             }
-    
+
             let resposta;
             try {
                 resposta = await openStreetMap(cep);
@@ -86,10 +97,10 @@ class LocalController {
                 }
                 throw error;
             }
-    
+
             let googleMap = await linkGoogleMap(cep);
             let localidade = resposta.display_name;
-    
+
             await Local.create({
                 usuario_id: usuario_id,
                 nome_local: nome_local,
@@ -98,38 +109,38 @@ class LocalController {
                 localidade: localidade,
                 coord_geo: googleMap
             });
-    
+
             res.status(201).json({ message: 'Local cadastrado com sucesso.' });
-    
+
         } catch (error) {
             console.log(error.message);
             res.status(500).json({ message: 'Não foi possível realizar o cadastro' });
         }
     }
-    
-    
+
+
 
 
     async atualizar(req, res) {
-        const { usuario_id, id } = req.params
-        const { nome_local, descricao, cep } = req.body
-    
-        const local = await Local.findOne({ where: { id } })
-    
-        if (req.payload.sub !== local.usuario_id) {
-            return res.status(403).json({ error: 'Você não tem permissão para atualizar este local.' });
-        }
-    
-        const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
-    
-        if (localExistente && localExistente.id != id) {
-            return res.status(400).json({ message: 'Local já cadastrado.' });
-        }
-    
-    
+
         try {
+            const { usuario_id, id } = req.params
+            const { nome_local, descricao, cep } = req.body
+
+            const local = await Local.findOne({ where: { id } })
+
+            if (req.payload.sub !== local.usuario_id) {
+                return res.status(403).json({ error: 'Você não tem permissão para atualizar este local.' });
+            }
+
+            const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
+
+            if (localExistente && localExistente.id != id) {
+                return res.status(400).json({ message: 'Local já cadastrado.' });
+            }
 
             let resposta;
+
             try {
                 resposta = await openStreetMap(cep);
             } catch (error) {
@@ -141,7 +152,7 @@ class LocalController {
 
             let googleMap = await linkGoogleMap(cep);
             let localidade = resposta.display_name;
-    
+
             await local.update({
                 nome_local: nome_local,
                 descricao: descricao,
@@ -149,42 +160,42 @@ class LocalController {
                 localidade: localidade,
                 coord_geo: googleMap
             });
-    
+
             res.status(200).json({ message: "Local atualizado com sucesso." })
-    
+
         } catch (error) {
-    
+
             console.log(error.message)
             res.status(500).json({ error: "Erro ao atualizar o local." })
-    
+
         }
-    
+
     }
-    
-    
+
+
 
     async deletar(req, res) {
         const { usuario_id, id } = req.params
-    
+
         const usuario = await Local.findOne({ where: { usuario_id, id } })
-    
+
         if (!usuario) {
             return res.status(404).json({ error: 'Local não encontrado.' });
         }
-    
+
         if (req.payload.sub !== usuario.usuario_id) {
             return res.status(403).json({ error: 'Você não tem permissão para deletar este local.' });
         }
-    
+
         Local.destroy({
             where: {
                 id: id
             }
         })
-    
+
         res.status(200).json({ message: "Local deletado com sucesso." })
     }
-    
+
 }
 
 module.exports = new LocalController
