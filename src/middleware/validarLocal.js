@@ -4,12 +4,6 @@ const Usuario = require('../models/Usuario');
 
 function validarLocal(esquema){
     return async function (req, res, next){
-        const { usuario_id } = req.body;
-
-        const usuario = await Usuario.findByPk(usuario_id);
-        if (!usuario) {
-            return res.status(404).json({ error: 'Usuário não encontrado' });
-        }
 
         esquema.validate(req.body)
         .then(()=> next())
