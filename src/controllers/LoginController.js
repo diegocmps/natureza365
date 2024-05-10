@@ -3,8 +3,6 @@ const Usuario = require("../models/Usuario");
 const { compare } = require("bcrypt");
 
 
-
-
 class LoginController {
 
 
@@ -27,14 +25,14 @@ class LoginController {
 
             if (!usuario) {
                 return res.status(400).json({ message: "E-mail ou senha incorretos." });
-            }            
-            
-            const testeSenha = await compare(senha, usuario.senha)
-            
-            if(testeSenha === false) {
-                return res.status(400).json({message: 'E-mail ou senha incorretos.'})
             }
-           
+
+            const testeSenha = await compare(senha, usuario.senha)
+
+            if (testeSenha === false) {
+                return res.status(400).json({ message: 'E-mail ou senha incorretos.' })
+            }
+
 
             const payload = {
                 sub: usuario.id,
@@ -42,7 +40,7 @@ class LoginController {
                 nome: usuario.nome
             }
 
-            
+
 
             const token = sign(payload, process.env.SECRET_JWT)
 

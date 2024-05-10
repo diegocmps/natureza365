@@ -24,15 +24,15 @@ class LocalController {
 
     async listar(req, res) {
         const usuario_id = Number(req.params.usuario_id);
-    
+
         if (req.payload.sub !== usuario_id) {
             return res.status(403).json({ error: 'Você não tem permissão para acessar estes locais.' });
         }
-    
+
         const local = await Local.findAll({
             where: { usuario_id }
         });
-    
+
         res.json(local);
     }
 
@@ -52,12 +52,18 @@ class LocalController {
 
     }
 
-
-
     async cadastrar(req, res) {
         try {
-            const { usuario_id, nome_local, descricao, cep } = req.body;
+            const { usuario_id } = req.body;
+            const { nome_local } = req.body;
+            const { descricao } = req.body;
+            const { cep } = req.body;
 
+
+            const usuario = await Usuario.findByPk(usuario_id);
+            if (!usuario) {
+                return res.status(404).json({ error: 'Usuário não encontrado' });
+            }
 
             const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
             if (localExistente) {
@@ -92,17 +98,27 @@ class LocalController {
 
         const { usuario_id, id } = req.params
         const { nome_local, descricao, localidade, coord_geo } = req.body
-        const local = await Local.findOne({ where: { usuario_id, id } })
-
+    
+        const local = await Local.findOne({ where: { id } })
+    
         if (req.payload.sub !== local.usuario_id) {
             return res.status(403).json({ error: 'Você não tem permissão para atualizar este local.' });
         }
-
+    
         const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
-        if (localExistente) {
+    
+        if (localExistente && localExistente.id != id) {
             return res.status(400).json({ message: 'Local já cadastrado.' });
         }
 
+        if(local.id !== Number(id)){
+            return res.status(400).json({message: 'Alteração de ID não permitida'})
+        }
+        
+        if(local.usuario_id !== Number(usuario_id)){
+            return res.status(400).json({message: 'Alteração de ID de usuário não permitida'})
+        }
+    
         try {
             await local.update({
                 nome_local: nome_local,
@@ -110,17 +126,18 @@ class LocalController {
                 localidade: localidade,
                 coord_geo: coord_geo
             });
-
+    
             res.status(200).json({ message: "Local atualizado com sucesso." })
-
+    
         } catch (error) {
-
+    
             console.log(error.message)
             res.status(500).json({ error: "Erro ao atualizar o local." })
-
+    
         }
-
+    
     }
+    
 
     async deletar(req, res) {
         const { usuario_id, id } = req.params
@@ -139,10 +156,7 @@ class LocalController {
         })
 
         res.status(200).json({ message: "Local deletado com sucesso." })
-
-
     }
-
 }
 
 module.exports = new LocalController

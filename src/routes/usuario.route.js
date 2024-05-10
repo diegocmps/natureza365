@@ -4,7 +4,6 @@ const Yup = require('yup');
 const { auth } = require("../middleware/auth");
 const validarUsuario = require("../middleware/validarUsuario");
 const usuarioSchema = require("../schemas/usuarioSchema");
-const atualizarUsuario = require("../middleware/atualizarUsuario");
 
 
 const usuarioRoutes = Router()
@@ -12,7 +11,7 @@ const usuarioRoutes = Router()
 
 usuarioRoutes.get('/', auth, UsuarioController.listar)
 usuarioRoutes.post('/', validarUsuario(usuarioSchema), UsuarioController.cadastrar)
-usuarioRoutes.put('/:id', auth, atualizarUsuario(usuarioSchema), UsuarioController.atualizar)
+usuarioRoutes.put('/:id', auth, validarUsuario(usuarioSchema), UsuarioController.atualizar)
 usuarioRoutes.delete('/:id', auth, UsuarioController.deletar)
 
 module.exports = usuarioRoutes
