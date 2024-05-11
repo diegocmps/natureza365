@@ -5,6 +5,13 @@ const { openStreetMap, linkGoogleMap } = require("../services/map.service");
 class LocalController {
 
     async listarGmaps(req, res) {
+        /*
+              #swagger.tags = ['Locais - Listas'],
+              #swagger.parameters['local_id'] = { description: 'Exibir link do Google Maps: Insira a ID do local.', type: 'number' }  
+
+        */
+
+
         const { local_id } = req.params;
 
         const local = await Local.findOne({
@@ -24,7 +31,12 @@ class LocalController {
 
 
     async listar(req, res) {
-        
+        /*  
+            #swagger.tags = ['Locais - Listas'],
+            #swagger.parameters['usuario_id'] = { description: 'Lista todos locais de um usuario. Insira a ID do usuário.' }  
+
+        */
+
         const usuario_id = Number(req.params.usuario_id);
 
         if (req.params.usuario_id === undefined) {
@@ -33,8 +45,8 @@ class LocalController {
 
         const usuario = await Usuario.findByPk(usuario_id);
 
-        if(!usuario){
-            return res.status(400).json({message: 'Usuário não encontrado.'})
+        if (!usuario) {
+            return res.status(400).json({ message: 'Usuário não encontrado.' })
         }
 
         if (req.payload.sub !== usuario_id) {
@@ -49,6 +61,13 @@ class LocalController {
     }
 
     async listarUm(req, res) {
+        /*  
+            #swagger.tags = ['Locais - Listas'],
+            #swagger.parameters['usuario_id'] = { description: 'Insira a ID do usuário.', type: 'number' },
+            #swagger.parameters['local_id'] = { description: 'Insira a ID do local para listar.', type: 'number' }  
+
+        */
+
 
         const { usuario_id, local_id } = req.params
 
@@ -71,6 +90,25 @@ class LocalController {
     }
 
     async cadastrar(req, res) {
+
+        /*
+            #swagger.tags = ['Locais - Cadastrar e editar'].  
+            #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Campo para cadastro de dados do local da natureza',
+            schema: {
+                $usuario_id: 3,
+                $nome_local: 'Trilha da Lagoinha do Leste',
+                $descricao: 'A Praia da Lagoinha do Leste é um dos paraísos mais preservados do sul de Florianópolis...',
+                $cep: '88067079'
+            }
+            }         
+        */
+
+
+
+
+
         try {
             const { usuario_id, nome_local, descricao, cep } = req.body;
 
@@ -122,6 +160,23 @@ class LocalController {
 
 
     async atualizar(req, res) {
+
+        /*
+            #swagger.tags = ['Locais - Cadastrar e editar'],  
+            #swagger.parameters['usuario_id'] = { description: 'Insira a ID do usuario', type: 'number' },
+            #swagger.parameters['id'] = { description: 'Insira a ID do local da natureza', type: 'number' },
+            #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Campo para atualizar dados de local da natureza',
+            schema: {
+                $usuario_id: 3,
+                $nome_local: 'Trilha da Lagoinha do Leste',
+                $descricao: 'A Praia da Lagoinha do Leste é um dos paraísos mais preservados do sul de Florianópolis...',
+                $cep: '88067079'
+            }
+            }         
+        */
+
 
         try {
             const { usuario_id, id } = req.params
@@ -175,6 +230,17 @@ class LocalController {
 
 
     async deletar(req, res) {
+        /*  #swagger.tags = ['Locais - Cadastrar e editar'], 
+            #swagger.parameters['usuario_id'] = { description: 'Insira ID do usuario',
+            type: 'number',
+            }
+            #swagger.parameters['id'] = { description: 'Insira ID do local',
+            type: 'number',
+            }
+
+        */
+
+
         const { usuario_id, id } = req.params
 
         const usuario = await Local.findOne({ where: { usuario_id, id } })

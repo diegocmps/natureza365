@@ -7,6 +7,17 @@ class LoginController {
 
 
     async login(req, res) {
+            /*
+                #swagger.tags = ['Cadastro de Usuário e Login'],
+                #swagger.parameters['body'] = {
+                in: 'body',
+                description: 'Campo para login e senha.',
+                schema: {
+                    $email: 'john@email.com',
+                    $senha: '12345678',
+                }
+            } */
+
 
         try {
 
