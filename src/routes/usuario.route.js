@@ -9,7 +9,6 @@ const usuarioSchema = require("../schemas/usuarioSchema");
 const usuarioRoutes = Router()
 
 
-usuarioRoutes.get('/', auth, UsuarioController.listar)
 usuarioRoutes.post('/', validarUsuario(usuarioSchema), UsuarioController.cadastrar)
 usuarioRoutes.put('/:id', auth, validarUsuario(usuarioSchema), UsuarioController.atualizar)
 usuarioRoutes.delete('/:id', auth, UsuarioController.deletar)

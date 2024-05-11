@@ -1,14 +1,27 @@
 const Local = require("../models/Local");
 const Usuario = require("../models/Usuario");
+const { hash } = require("bcrypt");
+
 
 class UsuarioController {
 
-    async listar(req, res) {
-        const usuario = await Usuario.findAll()
-        res.json(usuario)
-    }
-
     async cadastrar(req, res) {
+        /*
+        #swagger.tags = ['Cadastro de Usuário e Login'].  
+        #swagger.parameters['body'] = {
+          in: 'body',
+          description: 'Campo para cadastro de dados do usuário',
+          schema: {
+              $nome: 'John Doe',
+              $sexo: 'masculino',
+              $cpf: '98765432100',
+              $endereco: 'Rua das Cegonhas',
+              $email: 'john@email.com',
+              $senha: '12345678',
+              $data_nascimento: '1984-11-25'
+          }
+  } */
+
         try {
             const { nome } = req.body;
             const { sexo } = req.body
@@ -47,8 +60,33 @@ class UsuarioController {
 
 
     async atualizar(req, res) {
+        /*
+            #swagger.tags = ['Usuário - Editar'],
+            #swagger.parameters['id'] = { description: 'Insira ID do usuário', type: 'number' }  
+            #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Campo para atualizar dados do usuário',
+            schema: {
+                $nome: 'John Doe',
+                $sexo: 'masculino',
+                $cpf: '98765432100',
+                $endereco: 'Rua das Cegonhas',
+                $email: 'john@email.com',
+                $senha: '12345678',
+                $data_nascimento: '1984-11-25'
+            }
+            }
+        */
+
+
         const id = Number(req.params.id);
-        const { nome, sexo, cpf, endereco, email, senha, data_nascimento } = req.body;
+        const { nome } = req.body
+        const { sexo } = req.body
+        const { cpf } = req.body
+        const { endereco } = req.body
+        const { email } = req.body
+        let { senha } = req.body
+        const { data_nascimento } = req.body
 
         const validarUsuario = req.payload.sub
 
@@ -71,6 +109,10 @@ class UsuarioController {
             }
         }
 
+        if (senha) {
+            senha = await hash(senha, 8);
+        }
+
 
 
         try {
@@ -83,7 +125,7 @@ class UsuarioController {
                 email,
                 senha,
                 data_nascimento
-                
+
             }, {
                 where: { id: id }
             });
@@ -102,6 +144,12 @@ class UsuarioController {
     }
 
     async deletar(req, res) {
+
+        /*  #swagger.tags = ['Usuário - Editar'], 
+            #swagger.parameters['id'] = { description: 'Insira sua ID para deletar.', type: 'number' } 
+
+        */
+
         const id = Number(req.params.id)
 
         const usuarioLogadoId = req.payload.sub

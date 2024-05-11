@@ -10,63 +10,76 @@
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "apiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "authorization",
+      "description": "Token de Autenticação"
+    }
+  },
   "paths": {
     "/usuario/": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      },
       "post": {
+        "tags": [
+          "Cadastro de Usuário e Login"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Campo para cadastro de dados do usuário",
             "schema": {
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "John Doe"
                 },
                 "sexo": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "masculino"
                 },
                 "cpf": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "98765432100"
                 },
                 "endereco": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Rua das Cegonhas"
                 },
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "john@email.com"
                 },
                 "senha": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "12345678"
                 },
                 "data_nascimento": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "1984-11-25"
                 }
-              }
+              },
+              "required": [
+                "nome",
+                "sexo",
+                "cpf",
+                "endereco",
+                "email",
+                "senha",
+                "data_nascimento"
+              ]
             }
           }
         ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
@@ -76,13 +89,17 @@
     },
     "/usuario/{id}": {
       "put": {
+        "tags": [
+          "Usuário - Editar"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "Insira ID do usuário"
           },
           {
             "name": "authorization",
@@ -92,16 +109,48 @@
           {
             "name": "body",
             "in": "body",
+            "description": "Campo para atualizar dados do usuário",
             "schema": {
               "type": "object",
               "properties": {
+                "nome": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "sexo": {
+                  "type": "string",
+                  "example": "masculino"
+                },
                 "cpf": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "98765432100"
+                },
+                "endereco": {
+                  "type": "string",
+                  "example": "Rua das Cegonhas"
                 },
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "john@email.com"
+                },
+                "senha": {
+                  "type": "string",
+                  "example": "12345678"
+                },
+                "data_nascimento": {
+                  "type": "string",
+                  "example": "1984-11-25"
                 }
-              }
+              },
+              "required": [
+                "nome",
+                "sexo",
+                "cpf",
+                "endereco",
+                "email",
+                "senha",
+                "data_nascimento"
+              ]
             }
           }
         ],
@@ -109,14 +158,17 @@
           "200": {
             "description": "OK"
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
           },
           "500": {
             "description": "Internal Server Error"
@@ -124,13 +176,17 @@
         }
       },
       "delete": {
+        "tags": [
+          "Usuário - Editar"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "Insira sua ID para deletar."
           },
           {
             "name": "authorization",
@@ -142,96 +198,26 @@
           "200": {
             "description": "OK"
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/local/{local_id}/maps": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "local_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/local/{usuario_id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "usuario_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
-    "/local/{usuario_id}/{local_id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "usuario_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "local_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
     },
     "/local/": {
       "post": {
+        "tags": [
+          "Locais - Cadastrar e editar"
+        ],
         "description": "",
         "parameters": [
           {
@@ -242,22 +228,33 @@
           {
             "name": "body",
             "in": "body",
+            "description": "Campo para cadastro de dados do local da natureza",
             "schema": {
               "type": "object",
               "properties": {
                 "usuario_id": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 3
                 },
                 "nome_local": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Trilha da Lagoinha do Leste"
                 },
                 "descricao": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "A Praia da Lagoinha do Leste é um dos paraísos mais preservados do sul de Florianópolis..."
                 },
                 "cep": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "88067079"
                 }
-              }
+              },
+              "required": [
+                "usuario_id",
+                "nome_local",
+                "descricao",
+                "cep"
+              ]
             }
           }
         ],
@@ -270,6 +267,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -282,19 +282,24 @@
     },
     "/local/{usuario_id}/{id}": {
       "put": {
+        "tags": [
+          "Locais - Cadastrar e editar"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "usuario_id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "Insira a ID do usuario"
           },
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "Insira a ID do local da natureza"
           },
           {
             "name": "authorization",
@@ -304,25 +309,33 @@
           {
             "name": "body",
             "in": "body",
+            "description": "Campo para atualizar dados de local da natureza",
             "schema": {
               "type": "object",
               "properties": {
                 "usuario_id": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 3
                 },
                 "nome_local": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "Trilha da Lagoinha do Leste"
                 },
                 "descricao": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "A Praia da Lagoinha do Leste é um dos paraísos mais preservados do sul de Florianópolis..."
                 },
-                "localidade": {
-                  "example": "any"
-                },
-                "coord_geo": {
-                  "example": "any"
+                "cep": {
+                  "type": "string",
+                  "example": "88067079"
                 }
-              }
+              },
+              "required": [
+                "usuario_id",
+                "nome_local",
+                "descricao",
+                "cep"
+              ]
             }
           }
         ],
@@ -339,28 +352,109 @@
           "403": {
             "description": "Forbidden"
           },
-          "404": {
-            "description": "Not Found"
-          },
           "500": {
             "description": "Internal Server Error"
           }
         }
       },
       "delete": {
+        "tags": [
+          "Locais - Cadastrar e editar"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "usuario_id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number",
+            "description": "Insira ID do usuario"
           },
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "number",
+            "description": "Insira ID do local"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/local/{usuario_id}": {
+      "get": {
+        "tags": [
+          "Locais - Listas"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "usuario_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Lista todos locais de um usuario. Insira a ID do usuário."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/local/{usuario_id}/{local_id}": {
+      "get": {
+        "tags": [
+          "Locais - Listas"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "usuario_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira a ID do usuário."
+          },
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira a ID do local para listar."
           },
           {
             "name": "authorization",
@@ -381,23 +475,69 @@
         }
       }
     },
+    "/local/{local_id}/maps": {
+      "get": {
+        "tags": [
+          "Locais - Listas"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Exibir link do Google Maps: Insira a ID do local."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/login/": {
       "post": {
+        "tags": [
+          "Cadastro de Usuário e Login"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Campo para login e senha.",
             "schema": {
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "john@email.com"
                 },
                 "senha": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "12345678"
                 }
-              }
+              },
+              "required": [
+                "email",
+                "senha"
+              ]
             }
           }
         ],
@@ -414,5 +554,10 @@
         }
       }
     }
-  }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ]
 }

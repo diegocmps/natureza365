@@ -6,11 +6,14 @@ const localSchema = require("../schemas/localSchema");
 
 const localRoutes = Router()
 
-localRoutes.get('/:local_id/maps', auth, LocalController.listarGmaps)
-localRoutes.get('/:usuario_id', auth, LocalController.listar)
-localRoutes.get('/:usuario_id/:local_id', auth, LocalController.listarUm)
 localRoutes.post('/', validarLocal(localSchema), auth, LocalController.cadastrar)
 localRoutes.put('/:usuario_id/:id', validarLocal(localSchema), auth, LocalController.atualizar)
 localRoutes.delete('/:usuario_id/:id', auth, LocalController.deletar)
+
+localRoutes.get('/:usuario_id', auth, LocalController.listar)
+localRoutes.get('/:usuario_id/:local_id', auth, LocalController.listarUm)
+localRoutes.get('/:local_id/maps', auth, LocalController.listarGmaps)
+
+
 
 module.exports =  localRoutes

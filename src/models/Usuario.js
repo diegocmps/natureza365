@@ -37,8 +37,16 @@ const Usuario = connection.define("usuario", {
 })
 
 Usuario.beforeSave(async (usuario) => {
-   
+
     usuario.senha = await hash(usuario.senha, 8)
+    return usuario
+})
+
+Usuario.beforeUpdate(async (usuario) => {
+    if(usuario.changed('senha')){
+
+        usuario.senha = await hash(usuario.senha, 8)
+    }
     return usuario
 })
 
