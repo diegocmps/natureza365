@@ -7,7 +7,7 @@ class LocalController {
     async listarGmaps(req, res) {
         /*
               #swagger.tags = ['Locais - Listas'],
-              #swagger.parameters['local_id'] = { description: 'Exibir link do Google Maps: Insira a ID do local.', type: 'number' }  
+              #swagger.parameters['local_id'] = { description: 'Exibir link do Google Maps: Insira a ID do local.', type: 'number' }
 
         */
 
@@ -23,7 +23,7 @@ class LocalController {
         }
 
         if (req.payload.sub !== local.usuario_id) {
-            return res.status(403).json({ error: 'Você não tem permissão para acessar este local.' });
+            return res.status(401).json({ error: 'Você não tem permissão para acessar este local.' });
         }
 
         res.json(local.coord_geo);
@@ -50,7 +50,7 @@ class LocalController {
         }
 
         if (req.payload.sub !== usuario_id) {
-            return res.status(403).json({ error: 'Você não tem permissão para acessar estes locais.' });
+            return res.status(401).json({ error: 'Você não tem permissão para acessar estes locais.' });
         }
 
         const local = await Local.findAll({
@@ -81,7 +81,7 @@ class LocalController {
         }
 
         if (req.payload.sub !== local.usuario_id) {
-            return res.status(403).json({ error: 'Você não tem permissão para acessar este local.' });
+            return res.status(401).json({ error: 'Você não tem permissão para acessar este local.' });
         }
 
 
@@ -101,8 +101,13 @@ class LocalController {
                 $nome_local: 'Trilha da Lagoinha do Leste',
                 $descricao: 'A Praia da Lagoinha do Leste é um dos paraísos mais preservados do sul de Florianópolis...',
                 $cep: '88067079'
-            }
-            }         
+                }
+            },
+            #swagger.responses[201] = { description: 'Local cadastrado com sucesso.' },
+            #swagger.responses[400] = { description: 'Registro de dado obrigatório' },
+            #swagger.responses[401] = { description: 'Você não tem permissão para cadastrar este local.' },
+            #swagger.responses[404] = { description: 'Usuário não encontrado.' },
+            #swagger.responses[500] = { description: 'Não foi possível realizar o cadastro' }         
         */
 
 
@@ -113,7 +118,7 @@ class LocalController {
             const { usuario_id, nome_local, descricao, cep } = req.body;
 
             if (req.payload.sub !== Number(usuario_id)) {
-                return res.status(403).json({ message: 'Você não tem permissão para cadastrar este local.' })
+                return res.status(401).json({ message: 'Você não tem permissão para cadastrar este local.' })
             }
 
             const usuario = await Usuario.findByPk(usuario_id);
@@ -131,7 +136,7 @@ class LocalController {
                 resposta = await openStreetMap(cep);
             } catch (error) {
                 if (error.message === 'CEP não encontrado') {
-                    return res.status(400).json({ message: 'CEP não encontrado' });
+                    return res.status(404).json({ message: 'CEP não encontrado' });
                 }
                 throw error;
             }
@@ -185,7 +190,7 @@ class LocalController {
             const local = await Local.findOne({ where: { id } })
 
             if (req.payload.sub !== local.usuario_id) {
-                return res.status(403).json({ error: 'Você não tem permissão para atualizar este local.' });
+                return res.status(401).json({ error: 'Você não tem permissão para atualizar este local.' });
             }
 
             const localExistente = await Local.findOne({ where: { usuario_id, nome_local } });
@@ -250,7 +255,7 @@ class LocalController {
         }
 
         if (req.payload.sub !== usuario.usuario_id) {
-            return res.status(403).json({ error: 'Você não tem permissão para deletar este local.' });
+            return res.status(401).json({ error: 'Você não tem permissão para deletar este local.' });
         }
 
         Local.destroy({

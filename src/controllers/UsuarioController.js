@@ -91,7 +91,7 @@ class UsuarioController {
         const validarUsuario = req.payload.sub
 
         if (validarUsuario !== id) {
-            return res.status(403).json({ message: 'Você não tem permissão para atualizar este usuário.' })
+            return res.status(401).json({ message: 'Você não tem permissão para atualizar este usuário.' })
 
         }
 
@@ -157,7 +157,7 @@ class UsuarioController {
         console.log(usuarioLogadoId)
 
         if (usuarioLogadoId !== id) {
-            return res.status(403).json({ message: 'Você não tem permissão para deletar este usuário.' })
+            return res.status(401).json({ message: 'Você não tem permissão para deletar este usuário.' })
         }
 
         const usuario = await Usuario.findOne({

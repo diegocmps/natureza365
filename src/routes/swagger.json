@@ -164,9 +164,6 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
-          },
           "404": {
             "description": "Not Found"
           },
@@ -203,9 +200,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -260,22 +254,19 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Local cadastrado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Registro de dado obrigatório"
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
+            "description": "Você não tem permissão para cadastrar este local."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Usuário não encontrado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Não foi possível realizar o cadastro"
           }
         }
       }
@@ -349,9 +340,6 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
-          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -390,9 +378,6 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
-          },
           "404": {
             "description": "Not Found"
           }
@@ -428,9 +413,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         }
       }
@@ -501,9 +483,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
