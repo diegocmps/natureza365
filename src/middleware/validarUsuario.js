@@ -13,10 +13,10 @@ function validarUsuario(esquema) {
                     status = 422;
                     break;
                 case error.message.includes('deve conter'):
-                    status = 409;
+                    status = 422;
                     break;
                 case error.message.includes('deve ser uma ID válida'):
-                    status = 404;
+                    status = 422;
                     break;
                 default:
                     status = 400;

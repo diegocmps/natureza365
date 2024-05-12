@@ -3,7 +3,7 @@ const Yup = require('yup')
 const localSchema = Yup.object().shape({
     
     usuario_id: Yup.number()
-    .integer('O usuário ter uma ID válida.')
+    .integer('O usuário precisa ter uma ID válida.')
     .required('A ID é obrigatória.'),
 
     nome_local: Yup.string()

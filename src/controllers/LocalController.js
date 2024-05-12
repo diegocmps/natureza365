@@ -6,86 +6,130 @@ class LocalController {
 
     async listarGmaps(req, res) {
         /*
-              #swagger.tags = ['Locais - Listas'],
-              #swagger.parameters['local_id'] = { description: 'Exibir link do Google Maps: Insira a ID do local.', type: 'number' }
+            #swagger.tags = ['Locais - Listas'],
+            #swagger.parameters['local_id'] = { description: 'Exibir link do Google Maps: Insira a ID do local.', type: 'number' },
+            #swagger.responses[200] = { description: 'Solicitação processada com sucesso.' },
+            #swagger.responses[401] = { description: 'Você não tem permissão para acessar este local.' },
+            #swagger.responses[404] = { description: 'Local não encontrado.' },
+            #swagger.responses[500] = { description: 'Não foi possível processar a informação.' }
 
         */
 
+        try {
 
-        const { local_id } = req.params;
+            const { local_id } = req.params;
 
-        const local = await Local.findOne({
-            where: { id: local_id }
-        });
+            const local = await Local.findOne({
+                where: { id: local_id }
+            });
 
-        if (!local) {
-            return res.status(404).json({ message: 'Local não encontrado' });
+            if (!local) {
+                return res.status(404).json({ message: 'Local não encontrado' });
+            }
+
+            if (req.payload.sub !== local.usuario_id) {
+                return res.status(401).json({ error: 'Você não tem permissão para acessar este local.' });
+            }
+
+            res.status(200).json(local.coord_geo);
+
+
+        } catch (error) {
+
+            return res.status(500).json({ message: 'Não foi possível processar a informação.' })
+
         }
 
-        if (req.payload.sub !== local.usuario_id) {
-            return res.status(401).json({ error: 'Você não tem permissão para acessar este local.' });
-        }
 
-        res.json(local.coord_geo);
     }
 
 
     async listar(req, res) {
         /*  
             #swagger.tags = ['Locais - Listas'],
-            #swagger.parameters['usuario_id'] = { description: 'Lista todos locais de um usuario. Insira a ID do usuário.' }  
+            #swagger.parameters['usuario_id'] = { description: 'Lista todos locais de um usuario. Insira a ID do usuário.' },
+            #swagger.responses[200] = { description: 'Solicitação processada com sucesso.' },
+            #swagger.responses[400] = { description: 'Usuário não encontrado.' },
+            #swagger.responses[401] = { description: 'Você não tem permissão para acessar estes locais.' },
+            #swagger.responses[500] = { description: 'Não foi possível processar a informação.' }  
 
         */
 
-        const usuario_id = Number(req.params.usuario_id);
+        try {
 
-        if (req.params.usuario_id === undefined) {
-            return res.status(400).json({ message: 'Usuário não localizado.' });
+            const usuario_id = Number(req.params.usuario_id);
+
+            if (req.params.usuario_id === undefined) {
+                return res.status(400).json({ message: 'Usuário não localizado.' });
+            }
+
+            const usuario = await Usuario.findByPk(usuario_id);
+
+            if (!usuario) {
+                return res.status(400).json({ message: 'Usuário não encontrado.' })
+            }
+
+            if (req.payload.sub !== usuario_id) {
+                return res.status(401).json({ error: 'Você não tem permissão para acessar estes locais.' });
+            }
+
+            const local = await Local.findAll({
+                where: { usuario_id }
+            });
+
+            res.status(200).json(local);
+
+
+        } catch (error) {
+
+            return res.status(500).json({ message: 'Não foi possível processar a informação.' })
+
+
         }
 
-        const usuario = await Usuario.findByPk(usuario_id);
-
-        if (!usuario) {
-            return res.status(400).json({ message: 'Usuário não encontrado.' })
-        }
-
-        if (req.payload.sub !== usuario_id) {
-            return res.status(401).json({ error: 'Você não tem permissão para acessar estes locais.' });
-        }
-
-        const local = await Local.findAll({
-            where: { usuario_id }
-        });
-
-        res.json(local);
     }
 
     async listarUm(req, res) {
         /*  
             #swagger.tags = ['Locais - Listas'],
             #swagger.parameters['usuario_id'] = { description: 'Insira a ID do usuário.', type: 'number' },
-            #swagger.parameters['local_id'] = { description: 'Insira a ID do local para listar.', type: 'number' }  
+            #swagger.parameters['local_id'] = { description: 'Insira a ID do local para listar.', type: 'number' },
+            #swagger.responses[200] = { description: 'Solicitação processada com sucesso.' },
+            #swagger.responses[401] = { description: 'Você não tem permissão para acessar este local.' },
+            #swagger.responses[403] = { description: 'Local não encontrado.' },
+            #swagger.responses[500] = { description: 'Não foi possível processar a informação.' }    
 
         */
 
+        try {
 
-        const { usuario_id, local_id } = req.params
+            const { usuario_id, local_id } = req.params
 
-        const local = await Local.findOne({
-            where: { id: local_id, usuario_id }
-        })
+            const local = await Local.findOne({
+                where: { id: local_id, usuario_id }
+            })
+    
+    
+            if (!local) {
+                return res.status(403).json({ message: 'Local não encontrado.' })
+            }
+    
+            if (req.payload.sub !== local.usuario_id) {
+                return res.status(401).json({ error: 'Você não tem permissão para acessar este local.' });
+            }
+    
+    
+            res.status(200).json(local)
+    
+            
+        } catch (error) {
 
+            return res.status(500).json({ message: 'Não foi possível processar a informação.' })
 
-        if (!local) {
-            return res.status(403).json({ message: 'Local não encontrado.' })
+            
         }
 
-        if (req.payload.sub !== local.usuario_id) {
-            return res.status(401).json({ error: 'Você não tem permissão para acessar este local.' });
-        }
 
-
-        res.json(local)
 
     }
 
@@ -179,7 +223,13 @@ class LocalController {
                 $descricao: 'A Praia da Lagoinha do Leste é um dos paraísos mais preservados do sul de Florianópolis...',
                 $cep: '88067079'
             }
-            }         
+            },
+
+            #swagger.responses[200] = { description: 'Local atualizado com sucesso.' },
+            #swagger.responses[400] = { description: 'Registro de dado obrigatório' },
+            #swagger.responses[401] = { description: 'Você não tem permissão para atualizar este local.' },
+            #swagger.responses[404] = { description: 'O usuário precisa ter uma ID válida.' },
+            #swagger.responses[500] = { description: 'Erro ao atualizar o local.' }          
         */
 
 
@@ -241,30 +291,44 @@ class LocalController {
             }
             #swagger.parameters['id'] = { description: 'Insira ID do local',
             type: 'number',
-            }
+            },
+            #swagger.responses[200] = { description: 'Local deletado com sucesso.' },
+            #swagger.responses[401] = { description: 'Você não tem permissão para deletar este local.' },
+            #swagger.responses[404] = { description: 'Local não encontrado.' },
+            #swagger.responses[500] = { description: 'Não foi possível deletar o local.' }          
+
 
         */
 
+        try {
+            const { usuario_id, id } = req.params
 
-        const { usuario_id, id } = req.params
+            const usuario = await Local.findOne({ where: { usuario_id, id } })
 
-        const usuario = await Local.findOne({ where: { usuario_id, id } })
-
-        if (!usuario) {
-            return res.status(404).json({ error: 'Local não encontrado.' });
-        }
-
-        if (req.payload.sub !== usuario.usuario_id) {
-            return res.status(401).json({ error: 'Você não tem permissão para deletar este local.' });
-        }
-
-        Local.destroy({
-            where: {
-                id: id
+            if (!usuario) {
+                return res.status(404).json({ error: 'Local não encontrado.' });
             }
-        })
 
-        res.status(200).json({ message: "Local deletado com sucesso." })
+            if (req.payload.sub !== usuario.usuario_id) {
+                return res.status(401).json({ error: 'Você não tem permissão para deletar este local.' });
+            }
+
+            Local.destroy({
+                where: {
+                    id: id
+                }
+            })
+
+            res.status(200).json({ message: "Local deletado com sucesso." })
+
+
+        } catch (error) {
+
+            return res.status(500).json({ message: 'Não foi possível deletar o local.' })
+
+        }
+
+
     }
 
 }
