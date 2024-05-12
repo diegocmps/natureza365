@@ -7,11 +7,11 @@ class UsuarioController {
 
     async cadastrar(req, res) {
         /*
-        #swagger.tags = ['Cadastro de Usuário e Login'].  
-        #swagger.parameters['body'] = {
-          in: 'body',
-          description: 'Campo para cadastro de dados do usuário',
-          schema: {
+            #swagger.tags = ['Cadastro de Usuário e Login'].  
+            #swagger.parameters['body'] = {
+            in: 'body',
+            description: 'Campo para cadastro de dados do usuário',
+            schema: {
               $nome: 'John Doe',
               $sexo: 'masculino',
               $cpf: '98765432100',
@@ -19,8 +19,14 @@ class UsuarioController {
               $email: 'john@email.com',
               $senha: '12345678',
               $data_nascimento: '1984-11-25'
-          }
-  } */
+                }
+             },
+            #swagger.responses[201] = { description: 'Usuário cadastrado com sucesso.' },
+            #swagger.responses[400] = { description: 'Registro de dado obrigatório' },
+            #swagger.responses[422] = { description: 'Informe o dado no formato correto. ' },
+            #swagger.responses[500] = { description: 'Não foi possível realizar o cadastro.' }
+            
+        */
 
         try {
             const { nome } = req.body;
@@ -54,7 +60,7 @@ class UsuarioController {
 
             res.status(201).json(usuario);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            res.status(500).json({ message: 'Não foi possível realizar o cadastro.' });
         }
     }
 
@@ -74,8 +80,14 @@ class UsuarioController {
                 $email: 'john@email.com',
                 $senha: '12345678',
                 $data_nascimento: '1984-11-25'
-            }
-            }
+                }
+                },
+            #swagger.responses[200] = { description: 'Usuário atualizado com sucesso.' },
+            #swagger.responses[400] = { description: 'Registro de dado obrigatório' },
+            #swagger.responses[401] = { description: 'Você não tem permissão para atualizar este usuário.' },
+            #swagger.responses[404] = { description: 'Usuário não encontrado. ' },
+            #swagger.responses[422] = { description: 'Informe o dado no formato correto. ' },
+            #swagger.responses[500] = { description: 'Erro ao atualizar o usuário.' }
         */
 
 
@@ -91,7 +103,7 @@ class UsuarioController {
         const validarUsuario = req.payload.sub
 
         if (validarUsuario !== id) {
-            return res.status(403).json({ message: 'Você não tem permissão para atualizar este usuário.' })
+            return res.status(401).json({ message: 'Você não tem permissão para atualizar este usuário.' })
 
         }
 
@@ -146,47 +158,63 @@ class UsuarioController {
     async deletar(req, res) {
 
         /*  #swagger.tags = ['Usuário - Editar'], 
-            #swagger.parameters['id'] = { description: 'Insira sua ID para deletar.', type: 'number' } 
+            #swagger.parameters['id'] = { description: 'Insira sua ID para deletar.', type: 'number' },
+            #swagger.responses[200] = { description: 'Usuário deletado com sucesso.' },
+            #swagger.responses[400] = { description: 'Este usuário possui locais cadastrados. Não é possível excluí-lo.' },
+            #swagger.responses[401] = { description: 'Você não tem permissão para deletar este usuário.' },
+            #swagger.responses[404] = { description: 'Usuário não existe.' },
+            #swagger.responses[500] = { description: 'Não foi possível deletar o usuário.' },
+
 
         */
 
-        const id = Number(req.params.id)
+        try {
 
-        const usuarioLogadoId = req.payload.sub
+            const id = Number(req.params.id)
 
-        console.log(usuarioLogadoId)
-
-        if (usuarioLogadoId !== id) {
-            return res.status(403).json({ message: 'Você não tem permissão para deletar este usuário.' })
-        }
-
-        const usuario = await Usuario.findOne({
-            where: {
-                id: id
+            const usuarioLogadoId = req.payload.sub
+    
+            console.log(usuarioLogadoId)
+    
+            if (usuarioLogadoId !== id) {
+                return res.status(401).json({ message: 'Você não tem permissão para deletar este usuário.' })
             }
-        })
-
-        if (!usuario) {
-            return res.status(404).json({ message: 'Usuário não existe.' })
-        }
-
-        const locais = await Local.findAll({
-            where: {
-                usuario_id: id,
-            },
-        });
-
-        if (locais.length > 0) {
-            return res.status(400).json({ message: 'Este usuário possui locais cadastrados. Não é possível excluí-lo.' });
-        }
-
-        await Usuario.destroy({
-            where: {
-                id: id
+    
+            const usuario = await Usuario.findOne({
+                where: {
+                    id: id
+                }
+            })
+    
+            if (!usuario) {
+                return res.status(404).json({ message: 'Usuário não existe.' })
             }
-        })
+    
+            const locais = await Local.findAll({
+                where: {
+                    usuario_id: id,
+                },
+            });
+    
+            if (locais.length > 0) {
+                return res.status(400).json({ message: 'Este usuário possui locais cadastrados. Não é possível excluí-lo.' });
+            }
+    
+            await Usuario.destroy({
+                where: {
+                    id: id
+                }
+            })
+    
+            res.status(200).json({ message: 'Usuário deletado com sucesso.' })
+    
+            
+        } catch (error) {
 
-        res.status(200).json({ message: 'Usuário deletado com sucesso.' })
+            return res.status(500).json({message: 'Não foi possível deletar o usuário.'})
+            
+        }
+
     }
 }
 

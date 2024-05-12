@@ -7,16 +7,21 @@ class LoginController {
 
 
     async login(req, res) {
-            /*
-                #swagger.tags = ['Cadastro de Usuário e Login'],
-                #swagger.parameters['body'] = {
+    /*
+            #swagger.tags = ['Cadastro de Usuário e Login'],
+            #swagger.parameters['body'] = {
                 in: 'body',
                 description: 'Campo para login e senha.',
-                schema: {
+                    schema: {
                     $email: 'john@email.com',
                     $senha: '12345678',
-                }
-            } */
+                        }
+                    },
+            #swagger.responses[201] = { description: 'Login realizado com sucesso.' },
+            #swagger.responses[400] = { description: 'Registro de dado obrigatório' },
+            #swagger.responses[500] = { description: 'Não foi possível realizar o login.' }
+
+*/
 
 
         try {
@@ -61,7 +66,7 @@ class LoginController {
 
             console.log(error.message)
 
-            return res.status(500).json({ error: error, message: "Algo inesperado aconteceu" })
+            return res.status(500).json({ error: error, message: "Não foi possível realizar o login." })
 
         }
 

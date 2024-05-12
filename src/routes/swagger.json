@@ -76,13 +76,16 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Usuário cadastrado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Registro de dado obrigatório"
+          },
+          "422": {
+            "description": "Informe o dado no formato correto. "
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Não foi possível realizar o cadastro."
           }
         }
       }
@@ -156,22 +159,22 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Usuário atualizado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Registro de dado obrigatório"
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
+            "description": "Você não tem permissão para atualizar este usuário."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Usuário não encontrado. "
+          },
+          "422": {
+            "description": "Informe o dado no formato correto. "
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro ao atualizar o usuário."
           }
         }
       },
@@ -196,19 +199,19 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Usuário deletado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Este usuário possui locais cadastrados. Não é possível excluí-lo."
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
+            "description": "Você não tem permissão para deletar este usuário."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Usuário não existe."
+          },
+          "500": {
+            "description": "Não foi possível deletar o usuário."
           }
         }
       }
@@ -260,22 +263,19 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Local cadastrado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Registro de dado obrigatório"
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
+            "description": "Você não tem permissão para cadastrar este local."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Usuário não encontrado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Não foi possível realizar o cadastro"
           }
         }
       }
@@ -341,19 +341,19 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Local atualizado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Registro de dado obrigatório"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Você não tem permissão para atualizar este local."
           },
-          "403": {
-            "description": "Forbidden"
+          "404": {
+            "description": "O usuário precisa ter uma ID válida."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro ao atualizar o local."
           }
         }
       },
@@ -385,16 +385,52 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Local deletado com sucesso."
           },
           "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
+            "description": "Você não tem permissão para deletar este local."
           },
           "404": {
-            "description": "Not Found"
+            "description": "Local não encontrado."
+          },
+          "500": {
+            "description": "Não foi possível deletar o local."
+          }
+        }
+      }
+    },
+    "/local/{local_id}/maps": {
+      "get": {
+        "tags": [
+          "Locais - Listas"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Exibir link do Google Maps: Insira a ID do local."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitação processada com sucesso."
+          },
+          "401": {
+            "description": "Você não tem permissão para acessar este local."
+          },
+          "404": {
+            "description": "Local não encontrado."
+          },
+          "500": {
+            "description": "Não foi possível processar a informação."
           }
         }
       }
@@ -421,16 +457,16 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Solicitação processada com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Usuário não encontrado."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Você não tem permissão para acessar estes locais."
           },
-          "403": {
-            "description": "Forbidden"
+          "500": {
+            "description": "Não foi possível processar a informação."
           }
         }
       }
@@ -464,49 +500,16 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Solicitação processada com sucesso."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Você não tem permissão para acessar este local."
           },
           "403": {
-            "description": "Forbidden"
-          }
-        }
-      }
-    },
-    "/local/{local_id}/maps": {
-      "get": {
-        "tags": [
-          "Locais - Listas"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "local_id",
-            "in": "path",
-            "required": true,
-            "type": "number",
-            "description": "Exibir link do Google Maps: Insira a ID do local."
+            "description": "Local não encontrado."
           },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
+          "500": {
+            "description": "Não foi possível processar a informação."
           }
         }
       }
@@ -543,13 +546,13 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Login realizado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Registro de dado obrigatório"
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Não foi possível realizar o login."
           }
         }
       }
