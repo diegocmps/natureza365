@@ -1,0 +1,566 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Natureza365",
+    "description": "Projeto Natureza365",
+    "version": "2.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "apiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "authorization",
+      "description": "Token de Autenticação"
+    }
+  },
+  "paths": {
+    "/usuario/": {
+      "post": {
+        "tags": [
+          "Cadastro de Usuário e Login"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Campo para cadastro de dados do usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nome": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "sexo": {
+                  "type": "string",
+                  "example": "masculino"
+                },
+                "cpf": {
+                  "type": "string",
+                  "example": "98765432100"
+                },
+                "endereco": {
+                  "type": "string",
+                  "example": "Rua das Cegonhas"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john@email.com"
+                },
+                "senha": {
+                  "type": "string",
+                  "example": "12345678"
+                },
+                "data_nascimento": {
+                  "type": "string",
+                  "example": "1984-11-25"
+                }
+              },
+              "required": [
+                "nome",
+                "sexo",
+                "cpf",
+                "endereco",
+                "email",
+                "senha",
+                "data_nascimento"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso."
+          },
+          "400": {
+            "description": "Registro de dado obrigatório"
+          },
+          "422": {
+            "description": "Informe o dado no formato correto. "
+          },
+          "500": {
+            "description": "Não foi possível realizar o cadastro."
+          }
+        }
+      }
+    },
+    "/usuario/{id}": {
+      "put": {
+        "tags": [
+          "Usuário - Editar"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira ID do usuário"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Campo para atualizar dados do usuário",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nome": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "sexo": {
+                  "type": "string",
+                  "example": "masculino"
+                },
+                "cpf": {
+                  "type": "string",
+                  "example": "98765432100"
+                },
+                "endereco": {
+                  "type": "string",
+                  "example": "Rua das Cegonhas"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john@email.com"
+                },
+                "senha": {
+                  "type": "string",
+                  "example": "12345678"
+                },
+                "data_nascimento": {
+                  "type": "string",
+                  "example": "1984-11-25"
+                }
+              },
+              "required": [
+                "nome",
+                "sexo",
+                "cpf",
+                "endereco",
+                "email",
+                "senha",
+                "data_nascimento"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado com sucesso."
+          },
+          "400": {
+            "description": "Registro de dado obrigatório"
+          },
+          "401": {
+            "description": "Você não tem permissão para atualizar este usuário."
+          },
+          "404": {
+            "description": "Usuário não encontrado. "
+          },
+          "422": {
+            "description": "Informe o dado no formato correto. "
+          },
+          "500": {
+            "description": "Erro ao atualizar o usuário."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Usuário - Editar"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira sua ID para deletar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário deletado com sucesso."
+          },
+          "400": {
+            "description": "Este usuário possui locais cadastrados. Não é possível excluí-lo."
+          },
+          "401": {
+            "description": "Você não tem permissão para deletar este usuário."
+          },
+          "404": {
+            "description": "Usuário não existe."
+          },
+          "500": {
+            "description": "Não foi possível deletar o usuário."
+          }
+        }
+      }
+    },
+    "/local/": {
+      "post": {
+        "tags": [
+          "Locais - Cadastrar e editar"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Campo para cadastro de dados do local da natureza",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "usuario_id": {
+                  "type": "number",
+                  "example": 3
+                },
+                "nome_local": {
+                  "type": "string",
+                  "example": "Trilha da Lagoinha do Leste"
+                },
+                "descricao": {
+                  "type": "string",
+                  "example": "A Praia da Lagoinha do Leste é um dos paraísos mais preservados do sul de Florianópolis..."
+                },
+                "cep": {
+                  "type": "string",
+                  "example": "88067079"
+                }
+              },
+              "required": [
+                "usuario_id",
+                "nome_local",
+                "descricao",
+                "cep"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Local cadastrado com sucesso."
+          },
+          "400": {
+            "description": "Registro de dado obrigatório"
+          },
+          "401": {
+            "description": "Você não tem permissão para cadastrar este local."
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          },
+          "500": {
+            "description": "Não foi possível realizar o cadastro"
+          }
+        }
+      }
+    },
+    "/local/{usuario_id}/{id}": {
+      "put": {
+        "tags": [
+          "Locais - Cadastrar e editar"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "usuario_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira a ID do usuario"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira a ID do local da natureza"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Campo para atualizar dados de local da natureza",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "usuario_id": {
+                  "type": "number",
+                  "example": 3
+                },
+                "nome_local": {
+                  "type": "string",
+                  "example": "Trilha da Lagoinha do Leste"
+                },
+                "descricao": {
+                  "type": "string",
+                  "example": "A Praia da Lagoinha do Leste é um dos paraísos mais preservados do sul de Florianópolis..."
+                },
+                "cep": {
+                  "type": "string",
+                  "example": "88067079"
+                }
+              },
+              "required": [
+                "usuario_id",
+                "nome_local",
+                "descricao",
+                "cep"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Local atualizado com sucesso."
+          },
+          "400": {
+            "description": "Registro de dado obrigatório"
+          },
+          "401": {
+            "description": "Você não tem permissão para atualizar este local."
+          },
+          "404": {
+            "description": "O usuário precisa ter uma ID válida."
+          },
+          "500": {
+            "description": "Erro ao atualizar o local."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Locais - Cadastrar e editar"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "usuario_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira ID do usuario"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira ID do local"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Local deletado com sucesso."
+          },
+          "401": {
+            "description": "Você não tem permissão para deletar este local."
+          },
+          "404": {
+            "description": "Local não encontrado."
+          },
+          "500": {
+            "description": "Não foi possível deletar o local."
+          }
+        }
+      }
+    },
+    "/local/{local_id}/maps": {
+      "get": {
+        "tags": [
+          "Locais - Listas"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Exibir link do Google Maps: Insira a ID do local."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitação processada com sucesso."
+          },
+          "401": {
+            "description": "Você não tem permissão para acessar este local."
+          },
+          "404": {
+            "description": "Local não encontrado."
+          },
+          "500": {
+            "description": "Não foi possível processar a informação."
+          }
+        }
+      }
+    },
+    "/local/{usuario_id}": {
+      "get": {
+        "tags": [
+          "Locais - Listas"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "usuario_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Lista todos locais de um usuario. Insira a ID do usuário."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitação processada com sucesso."
+          },
+          "400": {
+            "description": "Usuário não encontrado."
+          },
+          "401": {
+            "description": "Você não tem permissão para acessar estes locais."
+          },
+          "500": {
+            "description": "Não foi possível processar a informação."
+          }
+        }
+      }
+    },
+    "/local/{usuario_id}/{local_id}": {
+      "get": {
+        "tags": [
+          "Locais - Listas"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "usuario_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira a ID do usuário."
+          },
+          {
+            "name": "local_id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "Insira a ID do local para listar."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicitação processada com sucesso."
+          },
+          "401": {
+            "description": "Você não tem permissão para acessar este local."
+          },
+          "403": {
+            "description": "Local não encontrado."
+          },
+          "500": {
+            "description": "Não foi possível processar a informação."
+          }
+        }
+      }
+    },
+    "/login/": {
+      "post": {
+        "tags": [
+          "Cadastro de Usuário e Login"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Campo para login e senha.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "john@email.com"
+                },
+                "senha": {
+                  "type": "string",
+                  "example": "12345678"
+                }
+              },
+              "required": [
+                "email",
+                "senha"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Login realizado com sucesso."
+          },
+          "400": {
+            "description": "Registro de dado obrigatório"
+          },
+          "500": {
+            "description": "Não foi possível realizar o login."
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ]
+}
