@@ -35,7 +35,7 @@ Após a importação do repositório da API Natureza365 você deverá seguir est
 4. No `Terminal`: Gerar as migrações das tabelas: `sequelize db:migrate`
 5. No `Terminal`: Gerar as migrações das seeders: `sequelize db:seed:all`
 6. No `Terminal`: Digite `npm run start:dev` para iniciar o servidor
-7. Em um navegador web digite `http://localhost:3000/docs` para consulta à documentação da API.
+7. Em um navegador web digite `http://localhost:3000/docs` para consulta à documentação da API via Swagger.
 
 ## Migrações utilizadas
 
@@ -74,6 +74,10 @@ Para o versionamento da API Natureza365 foi utilizado um gitflow através do GIT
 2. Branch Develop, criada como cópia inicial da branch Master, que recebeu todas as features criadas durante o projeto;
 3. Branches de features, geradas com raiz na branch develop.
 4. O teste final da API Natureza365 foi realizado na branch develop antes de migrar para a Branch Master.
+
+## Vídeo com a apresentação do projeto.
+
+O vídeo com apresentação do projeto pode ser visualizado em https://drive.google.com/file/d/1KSJEAI38H6RW2NEM8UkWCLlCSUrwlAwh/view?usp=drive_link
 
 Para gerenciamento do projeto foi utilizado o aplicativo Trello (https://trello.com/), onde foram criados stickers para cada ponto definido projeto, com algumas correções incluídas posteriormente.
 
