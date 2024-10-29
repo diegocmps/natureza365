@@ -1,6 +1,6 @@
 const { sign } = require("jsonwebtoken");
 const Usuario = require("../models/Usuario");
-const { compare } = require("bcrypt");
+const { compare } = require("bcryptjs");
 
 
 class LoginController {

@@ -1,6 +1,6 @@
 const Local = require("../models/Local");
 const Usuario = require("../models/Usuario");
-const { hash } = require("bcrypt");
+const { hash } = require("bcryptjs");
 
 
 class UsuarioController {
