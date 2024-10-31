@@ -64,6 +64,11 @@ const Usuario = connection.define("usuario", {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
+    },
+    isLogged: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 })
 
