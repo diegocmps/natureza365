@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       
-      usuario_id: {
+      usuarioId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
@@ -25,7 +25,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
 
-      nome_local: {
+      nome: {
         allowNull: false,
         type: Sequelize.STRING
       },

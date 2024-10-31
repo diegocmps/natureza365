@@ -2,11 +2,11 @@ const Yup = require('yup')
 
 const localSchema = Yup.object().shape({
     
-    usuario_id: Yup.number()
-    .integer('O usuário precisa ter uma ID válida.')
-    .required('A ID é obrigatória.'),
+    // usuarioId: Yup.number()
+    // .integer('O usuário precisa ter uma ID válida.')
+    // .required('A ID é obrigatória.'),
 
-    nome_local: Yup.string()
+    nome: Yup.string()
     .required('O nome do local é obrigatório'),
 
     cep: Yup.string()

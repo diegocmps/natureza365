@@ -1,18 +1,18 @@
 const { Router } = require("express");
-const LocalController = require("../controllers/LocalController");
 const { auth } = require("../middleware/auth");
-const validarLocal = require("../middleware/validarLocal");
-const localSchema = require("../schemas/localSchema");
+const LocalController = require("../controllers/LocalController");
 
-const localRoutes = Router()
+const localRoutes = Router();
 
-localRoutes.post('/', validarLocal(localSchema), auth, LocalController.cadastrar)
-localRoutes.put('/:usuario_id/:id', validarLocal(localSchema), auth, LocalController.atualizar)
-localRoutes.delete('/:usuario_id/:id', auth, LocalController.deletar)
+localRoutes.post('/', auth, LocalController.adicionarLocal);
+localRoutes.get('/', LocalController.listarTodosOsLocais);
+localRoutes.get('/local', LocalController.listarLocaisPorUsuario);
+localRoutes.get('/:localId', auth, LocalController.exibirLocal);
+localRoutes.get('/:localId/maps', auth, LocalController.getLinkGoogleMaps);
+localRoutes.delete('/:localId', auth, LocalController.deletarLocal);
+localRoutes.put('/:localId', auth, LocalController.atualizarLocal);
 
-localRoutes.get('/:local_id/maps', auth, LocalController.listarGmaps)
-localRoutes.get('/:usuario_id', auth, LocalController.listar)
-localRoutes.get('/:usuario_id/:local_id', auth, LocalController.listarUm)
 
 
-module.exports =  localRoutes
+
+module.exports = localRoutes;
