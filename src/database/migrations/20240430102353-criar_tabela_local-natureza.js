@@ -1,5 +1,7 @@
 'use strict';
 
+const { INTEGER } = require('sequelize');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -31,16 +33,30 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      localidade: {
+      cep: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      rua: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      coord_geo: {
+      bairro: {
         allowNull: false,
         type: Sequelize.STRING
       },
-
-
+      estado: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      latitude: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      longitude: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

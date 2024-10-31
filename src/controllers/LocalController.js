@@ -1,6 +1,5 @@
 const Local = require("../models/Local");
 const Usuario = require("../models/Usuario");
-const { openStreetMap, linkGoogleMap } = require("../services/map.service");
 
 class LocalController {
 
@@ -155,11 +154,8 @@ class LocalController {
         */
 
 
-
-
-
         try {
-            const { usuario_id, nome_local, descricao, cep } = req.body;
+            const { usuario_id, nome_local, descricao, cep, rua, bairro, estado, latitude, longitude } = req.body;
 
             if (req.payload.sub !== Number(usuario_id)) {
                 return res.status(401).json({ message: 'Você não tem permissão para cadastrar este local.' })
@@ -175,26 +171,16 @@ class LocalController {
                 return res.status(400).json({ message: 'Local já cadastrado.' });
             }
 
-            let resposta;
-            try {
-                resposta = await openStreetMap(cep);
-            } catch (error) {
-                if (error.message === 'CEP não encontrado') {
-                    return res.status(404).json({ message: 'CEP não encontrado' });
-                }
-                throw error;
-            }
-
-            let googleMap = await linkGoogleMap(cep);
-            let localidade = resposta.display_name;
-
             await Local.create({
-                usuario_id: usuario_id,
-                nome_local: nome_local,
-                descricao: descricao,
-                cep: cep,
-                localidade: localidade,
-                coord_geo: googleMap
+                usuario_id,
+                nome_local,
+                descricao,
+                cep,
+                rua,
+                bairro,
+                estado,
+                latitude,
+                longitude
             });
 
             res.status(201).json({ message: 'Local cadastrado com sucesso.' });
@@ -204,9 +190,6 @@ class LocalController {
             res.status(500).json({ message: 'Não foi possível realizar o cadastro' });
         }
     }
-
-
-
 
     async atualizar(req, res) {
 
@@ -235,7 +218,7 @@ class LocalController {
 
         try {
             const { usuario_id, id } = req.params
-            const { nome_local, descricao, cep } = req.body
+            const { nome_local, descricao, cep, rua, bairro, estado, latitude, longitude } = req.body
 
             const local = await Local.findOne({ where: { id } })
 
@@ -249,26 +232,15 @@ class LocalController {
                 return res.status(400).json({ message: 'Local já cadastrado.' });
             }
 
-            let resposta;
-
-            try {
-                resposta = await openStreetMap(cep);
-            } catch (error) {
-                if (error.message === 'CEP não encontrado') {
-                    return res.status(400).json({ message: 'CEP não encontrado' });
-                }
-                throw error;
-            }
-
-            let googleMap = await linkGoogleMap(cep);
-            let localidade = resposta.display_name;
-
             await local.update({
-                nome_local: nome_local,
-                descricao: descricao,
-                cep: cep,
-                localidade: localidade,
-                coord_geo: googleMap
+                nome_local,
+                descricao,
+                cep,
+                rua,
+                bairro,
+                estado,
+                latitude,
+                longitude 
             });
 
             res.status(200).json({ message: "Local atualizado com sucesso." })
@@ -277,12 +249,8 @@ class LocalController {
 
             console.log(error.message)
             res.status(500).json({ error: "Erro ao atualizar o local." })
-
         }
-
     }
-
-
 
     async deletar(req, res) {
         /*  #swagger.tags = ['Locais - Cadastrar e editar'], 
@@ -295,9 +263,7 @@ class LocalController {
             #swagger.responses[200] = { description: 'Local deletado com sucesso.' },
             #swagger.responses[401] = { description: 'Você não tem permissão para deletar este local.' },
             #swagger.responses[404] = { description: 'Local não encontrado.' },
-            #swagger.responses[500] = { description: 'Não foi possível deletar o local.' }          
-
-
+            #swagger.responses[500] = { description: 'Não foi possível deletar o local.' }      
         */
 
         try {
@@ -321,16 +287,11 @@ class LocalController {
 
             res.status(200).json({ message: "Local deletado com sucesso." })
 
-
         } catch (error) {
 
             return res.status(500).json({ message: 'Não foi possível deletar o local.' })
-
         }
-
-
     }
-
 }
 
 module.exports = new LocalController
