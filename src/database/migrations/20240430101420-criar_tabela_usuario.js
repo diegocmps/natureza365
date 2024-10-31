@@ -27,12 +27,10 @@ module.exports = {
         type: DataTypes.STRING,
         unique: true
       },
-
-      endereco: {
+      data_nascimento: {
         allowNull: false,
-        type: Sequelize.STRING,
-      },
-      
+        type: Sequelize.DATE
+      },     
       email: {
         allowNull: false,
         unique: true,
@@ -41,12 +39,35 @@ module.exports = {
       senha: {
         allowNull: false,
         type: Sequelize.STRING
-      },
-      data_nascimento: {
+      },      
+      cep: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.INTEGER,
       },
-
+      rua: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      numero: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      complemento: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      bairro: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      cidade: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      estado: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

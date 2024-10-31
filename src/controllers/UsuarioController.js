@@ -29,13 +29,8 @@ class UsuarioController {
         */
 
         try {
-            const { nome } = req.body;
-            const { sexo } = req.body
-            const { cpf } = req.body
-            const { endereco } = req.body
-            const { email } = req.body
-            const { senha } = req.body
-            const { data_nascimento } = req.body
+            const { nome, sexo, cpf, data_nascimento, email, senha, cep, rua, numero, complemento, bairro, cidade, estado } = req.body;
+
 
 
             let usuario = await Usuario.findOne({ where: { cpf: cpf } });
@@ -49,13 +44,19 @@ class UsuarioController {
             }
 
             usuario = await Usuario.create({
-                nome: nome,
-                sexo: sexo,
-                cpf: cpf,
-                endereco: endereco,
-                email: email,
-                senha: senha,
-                data_nascimento: data_nascimento
+                nome,
+                sexo,
+                cpf,
+                data_nascimento,
+                email,
+                senha,
+                cep,
+                rua,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado
             });
 
             res.status(201).json(usuario);
@@ -92,13 +93,8 @@ class UsuarioController {
 
 
         const id = Number(req.params.id);
-        const { nome } = req.body
-        const { sexo } = req.body
-        const { cpf } = req.body
-        const { endereco } = req.body
-        const { email } = req.body
+        const { nome, sexo, cpf, data_nascimento, email, cep, rua, numero, complemento, bairro, cidade, estado } = req.body;
         let { senha } = req.body
-        const { data_nascimento } = req.body
 
         const validarUsuario = req.payload.sub
 
@@ -133,11 +129,16 @@ class UsuarioController {
                 nome,
                 sexo,
                 cpf,
-                endereco,
+                data_nascimento,
                 email,
                 senha,
-                data_nascimento
-
+                cep,
+                rua,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado
             }, {
                 where: { id: id }
             });
@@ -173,46 +174,46 @@ class UsuarioController {
             const id = Number(req.params.id)
 
             const usuarioLogadoId = req.payload.sub
-    
+
             console.log(usuarioLogadoId)
-    
+
             if (usuarioLogadoId !== id) {
                 return res.status(401).json({ message: 'Você não tem permissão para deletar este usuário.' })
             }
-    
+
             const usuario = await Usuario.findOne({
                 where: {
                     id: id
                 }
             })
-    
+
             if (!usuario) {
                 return res.status(404).json({ message: 'Usuário não existe.' })
             }
-    
+
             const locais = await Local.findAll({
                 where: {
                     usuario_id: id,
                 },
             });
-    
+
             if (locais.length > 0) {
                 return res.status(400).json({ message: 'Este usuário possui locais cadastrados. Não é possível excluí-lo.' });
             }
-    
+
             await Usuario.destroy({
                 where: {
                     id: id
                 }
             })
-    
+
             res.status(200).json({ message: 'Usuário deletado com sucesso.' })
-    
-            
+
+
         } catch (error) {
 
-            return res.status(500).json({message: 'Não foi possível deletar o usuário.'})
-            
+            return res.status(500).json({ message: 'Não foi possível deletar o usuário.' })
+
         }
 
     }
