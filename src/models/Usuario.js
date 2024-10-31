@@ -17,8 +17,8 @@ const Usuario = connection.define("usuario", {
         allowNull: false,
         unique: true
     },
-    endereco: {
-        type: DataTypes.STRING,
+    data_nascimento: {
+        type: DataTypes.DATE,
         allowNull: false
     },
     email: {
@@ -30,9 +30,40 @@ const Usuario = connection.define("usuario", {
         type: DataTypes.STRING,
         allowNull: false
     },
-    data_nascimento: {
-        type: DataTypes.DATE,
-        allowNull: false
+    cep: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true
+    },
+    rua: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    numero: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    complemento: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    bairro: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    cidade: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    estado: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
     }
 })
 

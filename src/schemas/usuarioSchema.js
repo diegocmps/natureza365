@@ -16,7 +16,7 @@ const usuarioSchema = Yup.object().shape({
     .matches(/^\d{11}$/, 'O CPF deve estar no formato correto.')
     .required('O cpf é obrigatório.'),
 
-    endereco: Yup.string()
+    cep: Yup.string()
     .required('O endereço é obrigatório.'),
 
     email: Yup.string()
