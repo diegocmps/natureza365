@@ -68,6 +68,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      isLogged: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
