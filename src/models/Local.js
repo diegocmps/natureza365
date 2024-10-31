@@ -5,11 +5,11 @@ const { connection } = require("../database/connection");
 const Local = connection.define('locais', {
 
 
-    usuario_id:{
+    usuarioId:{
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    nome_local:{
+    nome:{
         type: DataTypes.STRING,
         allowNull: false
     },
