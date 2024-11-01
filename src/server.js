@@ -3,7 +3,7 @@ const cors = require('cors')
 const { connection } = require('./database/connection')
 const routes = require('./routes/routes')
 
-const PORT_API = process.env.PORT_API 
+const PORT_API = process.env.PORT_API || 3000
 
 class Server {
   constructor (server = express())
