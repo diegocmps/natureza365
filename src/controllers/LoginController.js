@@ -51,16 +51,28 @@ class LoginController {
     }
 
     async logout(req, res) {
+
         try {
-            const usuarioId = req.payload.sub
+            const usuarioId = req.payload?.sub
+
+            if (!usuarioId) {
+                return res.status(400).json({ message: 'Usuário não autenticado' });
+            }
+
             const usuarioLogado = await Usuario.findOne({
                 where: {
                     id: usuarioId
                 }
             })
 
+            if (!usuarioLogado) {
+                return res.status(404).json({ message: 'Usuário não encontrado' });
+            }
+
             usuarioLogado.isLogged = false
             await usuarioLogado.save()
+            
+            console.log('isLogged atualizado:', usuarioLogado.isLogged)
 
             return res.status(200).json({message: 'Logout realizado com sucesso'})
 
