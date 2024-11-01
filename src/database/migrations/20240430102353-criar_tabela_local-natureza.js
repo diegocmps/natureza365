@@ -1,77 +1,70 @@
 'use strict';
 
-const { INTEGER } = require('sequelize');
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('locais', {
-
       id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
+        primaryKey: true
       },
-      
+      nome: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      descricao: {
+        type: Sequelize.TEXT
+      },
+      cep: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      rua: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      bairro: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      cidade: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      estado: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      latitude: {
+        type: Sequelize.FLOAT
+      },
+      longitude: {
+        type: Sequelize.FLOAT
+      },
       usuarioId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: 'usuarios',
+          model: 'usuarios', 
           key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-
-      nome: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      descricao: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      cep: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      rua: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      bairro: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      estado: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      latitude: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
-      longitude: {
-        allowNull: false,
-        type: Sequelize.STRING
-      },
       createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       },
       updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       }
-
     });
-
   },
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('locais');
-
   }
 };
