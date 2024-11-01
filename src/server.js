@@ -5,7 +5,7 @@ const route = require('./route/route');
 
 
 
-const PORT_API = process.env.PORT_API;
+const PORT_API = process.env.PORT_API || 3000;
 
 
 class Server {
