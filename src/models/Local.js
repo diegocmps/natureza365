@@ -1,35 +1,72 @@
 const { DataTypes } = require("sequelize");
 const { connection } = require("../database/connection");
-
+const Usuario = require("./Usuario");
 
 const Local = connection.define('locais', {
-
-
-    usuario_id:{
+    id: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        primaryKey: true,
+        autoIncrement: true
     },
-    nome_local:{
+
+    nome: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
-    descricao:{
-        type: DataTypes.STRING,
-        allowNull: false
+
+    descricao: {
+        type: DataTypes.TEXT
     },
-    cep:{
-        type: DataTypes.STRING,
-        allowNull: false
+
+    cep: {
+        type: DataTypes.STRING
     },
-    localidade:{
-        type: DataTypes.STRING,
-        allowNull: true
+
+    rua: {
+        type: DataTypes.STRING
     },
-    coord_geo:{
-        type: DataTypes.STRING,
-        allowNull: true
+
+    bairro: {
+        type: DataTypes.STRING
+    },
+
+    cidade: {
+        type: DataTypes.STRING
+    },
+
+    estado: {
+        type: DataTypes.STRING
+    },
+
+    latitude: {
+        type: DataTypes.FLOAT
+    },
+
+    longitude: {
+        type: DataTypes.FLOAT
+    },
+
+    usuarioId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Usuario,
+            key: 'id'
+        }
+    },
+
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     }
+});
 
-})
+Usuario.hasMany(Local, { foreignKey: 'usuarioId' });
+Local.belongsTo(Usuario, { foreignKey: 'usuarioId' });
 
-module.exports = Local
+module.exports = Local;
