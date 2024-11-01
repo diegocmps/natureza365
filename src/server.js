@@ -30,17 +30,20 @@ class Server {
       console.log('Conexão bem sucedida!');
     } catch (error) {
       console.error('Não foi possível conectar no banco de dados.', error);
+      console.log('Configuração do banco de dados:', databaseConfig); // Log da configuração
       throw error;
     }
   }
 
   async initializeServer(app) {
-    app.listen(PORT_API, () =>
-      console.log(`Servidor executando na porta ${PORT_API}`)
-    );
+    app.listen(PORT_API, () => {
+      console.log(`Servidor executando na porta ${PORT_API}`);
+      console.log('Aguardando requisições...');
+    });
   }
+  
 
- 
+
 }
 
 module.exports = { Server };

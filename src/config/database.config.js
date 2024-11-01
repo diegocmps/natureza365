@@ -1,5 +1,11 @@
 const { config } = require('dotenv').config()
 
+console.log('DB Dialect:', process.env.DB_DIALECT);
+console.log('DB Host:', process.env.DB_HOST);
+console.log('DB Username:', process.env.DB_USERNAME);
+console.log('DB Database:', process.env.DB_DATABASE);
+console.log('DB Port:', process.env.DB_PORT);
+
 module.exports = {
   dialect: process.env.DB_DIALECT, //Qual banco de dados está utilizando;
   host: process.env.DB_HOST, //Qual servidor está utilizando;
