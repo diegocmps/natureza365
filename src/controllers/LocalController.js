@@ -12,25 +12,27 @@ class LocalController {
                     $nome: 'Trilha Morro das aranhas',
                     $descricao: 'Trilha com vista para as praias do Santinho, Moçambique e Ingleses',
                     $cep: '88058-700',
+                    $rua: 'Rua Exemplo',
+                    $bairro: 'Bairro Exemplo',
+                    $cidade: 'Cidade Exemplo',
+                    $estado: 'SC',
+                    $latitude: -27.5969,
+                    $longitude: -48.5495
                 }
             }
         */
         try {
             const usuarioId = req.payload.sub;
-            const { nome, descricao, cep } = req.body;
-
-            if (!nome || !cep) {
-                return res.status(400).json({ message: 'Nome e CEP são obrigatórios!' });
+            const { nome, descricao, cep, rua, bairro, cidade, estado, latitude, longitude } = req.body;
+    
+            const requiredFields = [nome, cep, rua, bairro, cidade, estado, latitude, longitude];
+            
+            const missingFields = requiredFields.filter(field => !field);
+    
+            if (missingFields.length) {
+                return res.status(400).json({ message: 'Todos os campos de endereço são obrigatórios!' });
             }
-
-            const response = await axios.get(`https://cep.awesomeapi.com.br/json/${cep}`);
-
-            if (!response.data || response.data.length === 0) {
-                return res.status(400).json({ message: 'Endereço não localizado' });
-            }
-
-            const { address_name: rua, district: bairro, city: cidade, state: estado, lat, lng: lon } = response.data;
-
+    
             const novoLocal = await Local.create({
                 nome,
                 descricao,
@@ -39,75 +41,74 @@ class LocalController {
                 bairro,
                 cidade,
                 estado,
-                latitude: parseFloat(lat),
-                longitude: parseFloat(lon),
+                latitude: parseFloat(latitude),
+                longitude: parseFloat(longitude),
                 usuarioId
             });
-
+    
             return res.status(201).json(novoLocal);
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Erro ao cadastrar o local', error: error.message });
         }
     }
-
+    
+    
 
     async atualizarLocal(req, res) {
         /*
          #swagger.tags = ['Local'],
-         #swagger.parameters = ['body'] ={
+         #swagger.parameters['body'] = {
             in: 'body',
-            description:'Atualizar endereço!',
+            description: 'Atualizar dados do local!',
             schema: {
                 $nome: 'Morro das Aranhas',
                 $descricao: 'Trilha fácil',
-                $cep: '88058-700'
+                $cep: '88058-700',
+                $rua: 'Rua Exemplo', // opcional
+                $bairro: 'Bairro Exemplo', // opcional
+                $cidade: 'Cidade Exemplo', // opcional
+                $estado: 'SC', // opcional
+                $latitude: -27.5969, // opcional
+                $longitude: -48.5495 // opcional
             }   
         }
         */
         try {
             const usuarioId = req.payload.sub;
-            const { nome, descricao, cep } = req.body;
-
-            if (!nome || !cep) {
-                return res.status(400).json({ message: 'Nome e CEP são obrigatórios!' });
+            const { nome, descricao, cep, rua, bairro, cidade, estado, latitude, longitude } = req.body;
+    
+            const requiredFields = [nome, cep, rua, bairro, cidade, estado, latitude, longitude];
+            const missingFields = requiredFields.filter(field => !field);
+    
+            if (missingFields.length) {
+                return res.status(400).json({ message: 'Todos os campos de endereço são obrigatórios!' });
             }
-
-            const response = await axios.get(`https://cep.awesomeapi.com.br/json/${cep}`);
-
-            if (!response.data || response.data.length === 0) {
-                return res.status(400).json({ message: 'Endereço não localizado' });
-            }
-
-            const { address_name: rua, district: bairro, city: cidade, state: estado, lat, lng: lon } = response.data;
-
-
+    
             const localAtualizar = await Local.findOne({ where: { id: req.params.localId, usuarioId } });
-
             if (!localAtualizar) {
                 return res.status(404).json({ message: 'Local não encontrado!' });
             }
-
-
+    
             localAtualizar.nome = nome;
-            localAtualizar.descricao = descricao;
+            localAtualizar.descricao = descricao || localAtualizar.descricao;
             localAtualizar.cep = cep;
             localAtualizar.rua = rua;
             localAtualizar.bairro = bairro;
             localAtualizar.cidade = cidade;
             localAtualizar.estado = estado;
-            localAtualizar.latitude = parseFloat(lat);
-            localAtualizar.longitude = parseFloat(lon);
-
+            localAtualizar.latitude = parseFloat(latitude);
+            localAtualizar.longitude = parseFloat(longitude);
+    
             await localAtualizar.save();
-
-            res.status(200).json(localAtualizar);
+    
+            return res.status(200).json(localAtualizar);
         } catch (error) {
             console.error(error);
             return res.status(500).json({ error: 'Não foi possível atualizar as informações do local.' });
         }
     }
-
+    
     async deletarLocal(req, res) {
         /*  
         #swagger.tags = ['Local'],  
@@ -197,29 +198,6 @@ async listarLocaisPorUsuario(req, res) {
         }
     }
 
-    async getLinkGoogleMaps(req, res) {
-        /*
-          #swagger.tags = ['Local'],  
-          #swagger.parameters['Local_id'] = {
-              in: 'query',
-              description: 'Filtrar local pelo ID',
-              type: 'string'
-        }
-        */
-        try {
-            const usuarioId = req.payload.sub;
-            const local = await Local.findOne({ where: { id: req.params.localId } });
-
-            if (!local) {
-                return res.status(404).json({ message: 'Local não encontrado ou acesso não permitido' });
-            }
-
-            const googleMapsLink = `https://www.google.com/maps?q=${local.latitude},${local.longitude}`;
-            res.status(200).json({ googleMapsLink });
-        } catch (error) {
-            return res.status(500).json({ error: 'Não foi possível obter o link do Google Maps para o local' });
-        }
-    }
 }
 
 module.exports = new LocalController();
