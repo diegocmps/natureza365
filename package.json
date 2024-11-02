@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon src/index.js",
-    "swagger": "node ./swagger.js"
+    "swagger": "node ./swagger.js",
+     "deploy": "sequelize-cli db:migrate && sequelize-cli db:seed:all && node src/index.js"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +22,7 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.5",
     "pg-connection-string": "^2.6.0",
-    "sequelize": "^6.37.3",
+    "sequelize": "^6.37.5",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.0",
     "yup": "^1.4.0"

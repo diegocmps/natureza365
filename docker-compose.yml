@@ -1,0 +1,29 @@
+
+services:
+  db:
+    image: postgres
+    container_name: natureza365-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: natureza365
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  app:
+    restart: on-failure
+    build: .
+    depends_on:
+      - db
+    environment:
+      HOST: db
+
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
+    volumes:
+      - .:/app/
+      - /app/node_modules
+volumes:
+  postgres_data:
