@@ -1,5 +1,4 @@
 const Local = require('../models/Local');
-const axios = require('axios');
 
 class LocalController {
     async adicionarLocal(req, res) {

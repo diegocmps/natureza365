@@ -55,7 +55,6 @@ Após a importação do repositório da API Natureza365 você deverá seguir est
 * [Dotenv] (https://www.npmjs.com/package/dotenv) - Gerenciador de variáveis de ambiente
 * [JsonwebToken] (https://www.npmjs.com/package/jsonwebtoken) - Gerador de token para dados pessoais
 * [Bcrypt] (https://www.npmjs.com/package/bcrypt) - Gerador de criptografia
-* [Axios] (https://axios-http.com/ptbr/) - Biblioteca para consulta à API's externas
 * [Swagger] (https://www.npmjs.com/package/swagger-ui-express) - Biblioteca para modelagem da API
 
 ## Melhorias para futuras versões
