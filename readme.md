@@ -68,12 +68,13 @@ Isso criará e executará a aplicação, além de iniciar um banco de dados Post
 * [Docker](https://www.docker.com/) (🐳) - Containerização da aplicação
 * [Docker Compose](https://docs.docker.com/compose/) (📦) - Gerenciamento de containers
 
+
 ## Melhorias para futuras versões
 
-1. Criação de uma tabela para endereço do usuário, com dados precisos.
-2. Restringir as consultas de CEP ou coordenadas à locais da natureza.
-3. Gerar mais campos para exibição de fotos, vídeos e outros detalhes de cada local.
-4. Mostrar Locais da Natureza próximo à sua localização.
+1. Criação de rotas para Plantas e Animais.
+2. Criação de perfis de usuário, como administrador,através do RBAC.
+3. Criar paginação nas tabelas.
+
 
 ## 📌 Versão
 
