@@ -7,14 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon src/index.js",
     "swagger": "node ./swagger.js",
-     "deploy": "sequelize-cli db:migrate && sequelize-cli db:seed:all && node src/index.js"
+    "deploy": "sequelize-cli db:migrate && sequelize-cli db:seed:all && node src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/swagger-ui": "^3.52.4",
-    "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

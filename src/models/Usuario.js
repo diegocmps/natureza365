@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { connection } = require('../database/connection');
-const { hash } = require('bcryptjs')
+const { hash } = require('bcryptjs');
 
 const Usuario = connection.define('usuario', {
     id: {
@@ -77,8 +77,18 @@ const Usuario = connection.define('usuario', {
 });
 
 Usuario.beforeCreate(async (usuario) => {
-    usuario.senha = await hash(usuario.senha.toString(), 8)
-    return usuario
-})
+    usuario.senha = await hash(usuario.senha.toString(), 8);
+    return usuario;
+});
+
+Usuario.beforeUpdate(async (usuario) => {
+    if (usuario.changed('senha')) {
+        usuario.senha = await hash(usuario.senha.toString(), 8);
+    } else {
+        const existingUser = await Usuario.findByPk(usuario.id);
+        usuario.senha = existingUser.senha;
+    }
+    return usuario;
+});
 
 module.exports = Usuario;

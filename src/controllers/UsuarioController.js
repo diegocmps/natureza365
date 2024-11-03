@@ -1,6 +1,8 @@
 const Usuario = require('../models/Usuario');
 const Local = require('../models/Local');
 const { Op } = require('sequelize');
+const { usuarioSchema, usuarioUpdateSchema } = require('../validators/usuarioValidation');
+
 
 function validarCPF(cpf) {
     cpf = cpf.replace(/\D/g, '');
@@ -12,30 +14,37 @@ function validarCPF(cpf) {
 
 class UsuarioController {
     async cadastrar(req, res) {
+
         /*
-             #swagger.tags = ['Usuario'],
-             #swagger.parameters = ['body'] ={
-               in: 'body',
-               description: 'Cadastra novos usuários!',
-               schema: {
-                $nome: 'Taline Araujo',
-                $email: 'taline.araujo@hotmail.com',
-                $cpf: '02602502789',
-                sexo: 'Feminino',
-                $senha: 'teste123',
-                $data_nascimento: '1996-04-03',
-                $endereco: 'Vargem pequena',
-                $cep: '12345-678',
-                $rua: 'Rua Exemplo',
-                $numero: '123',
-                $complemento: 'Apto 1',
-                $bairro: 'Bairro Exemplo',
-                $cidade: 'Cidade Exemplo',
-                $estado: 'Estado Exemplo'
-            }   
+    #swagger.tags = ['Cadastro de Usuário e Login'].
+    #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Campo para cadastro de dados do usuário',
+        schema: {
+            $nome: 'John Doe',
+            $email: 'john@email.com',
+            $cpf: '98765432100',
+            $sexo: 'masculino',
+            $senha: '12345678',
+            $data_nascimento: '1984-11-25',
+            $cep: '12345678',
+            $rua: 'Rua das Cegonhas',
+            $numero: '123',
+            $complemento: 'Apto 45',
+            $bairro: 'Bairro Exemplo',
+            $cidade: 'Cidade Exemplo',
+            $estado: 'Estado Exemplo'
         }
-        */
+    },
+    #swagger.responses[201] = { description: 'Usuário cadastrado com sucesso.' },
+    #swagger.responses[400] = { description: 'Registro de dado obrigatório. Erros: [{ field: "email", message: "Email já cadastrado!" }, ...]' },
+    #swagger.responses[422] = { description: 'Informe o dado no formato correto. Erros: [{ field: "nome", message: "O nome é obrigatório" }, ...]' },
+    #swagger.responses[500] = { description: 'Não foi possível realizar o cadastro.' }
+*/
+
         try {
+            await usuarioSchema.validate(req.body, { abortEarly: false });
+
             const {
                 nome,
                 email,
@@ -52,34 +61,23 @@ class UsuarioController {
                 estado
             } = req.body;
 
-            if (!nome) {
-                return res.status(400).json({ message: 'O nome é obrigatório' });
-            }
+            const usuarioCadastrado = await Usuario.findOne({
+                where: {
+                    [Op.or]: [{ email }, { cpf }]
+                }
+            });
 
-            if (!senha) {
-                return res.status(400).json({ message: 'A senha é obrigatória' });
-            }
-
-            if (!email) {
-                return res.status(400).json({ message: 'O email é obrigatório' });
-            }
-
-            const usuarioCadastrado = await Usuario.findOne({ where: { email } });
             if (usuarioCadastrado) {
-                return res.status(400).json({ error: true, message: 'Email já cadastrado!' });
+                const errors = [];
+                if (usuarioCadastrado.email === email) {
+                    errors.push({ field: 'email', message: 'Email já cadastrado!' });
+                }
+                if (usuarioCadastrado.cpf === cpf) {
+                    errors.push({ field: 'cpf', message: 'CPF já cadastrado!' });
+                }
+                return res.status(400).json({ error: true, message: 'Erro de validação', errors });
             }
 
-            if (!cpf || !validarCPF(cpf)) {
-                return res.status(400).json({ message: 'CPF inválido' });
-            }
-
-            if (!data_nascimento) {
-                return res.status(400).json({ message: 'A data de nascimento é obrigatória' });
-            }
-
-            if (!data_nascimento.match(/\d{4}-\d{2}-\d{2}/)) {
-                return res.status(400).json({ message: 'A data de nascimento não está no formato correto' });
-            }
 
             const usuario = await Usuario.create({
                 nome,
@@ -98,7 +96,13 @@ class UsuarioController {
             });
 
             res.status(201).json(usuario);
+
         } catch (error) {
+            if (error.name === 'ValidationError') {
+                const errors = error.inner.map(err => ({ field: err.path, message: err.message }));
+                return res.status(400).json({ error: true, message: 'Erro de validação', errors });
+            }
+
             console.error(error.message);
             res.status(500).json({ error: 'Não foi possível cadastrar o usuário' });
         }
@@ -156,15 +160,12 @@ class UsuarioController {
             const { id } = req.params;
             const enderecoUsuario = await Local.findOne({ where: { usuarioId: id } });
 
-            // Verifica se o usuário possui endereços cadastrados
             if (enderecoUsuario) {
                 return res.status(400).json({ error: true, message: 'Este usuário não pode ser excluído pois possui endereços cadastrados.' });
             }
 
-            // Tenta excluir o usuário
             const usuarioExcluido = await Usuario.destroy({ where: { id } });
 
-            // Verifica se o usuário foi encontrado e excluído
             if (!usuarioExcluido) {
                 return res.status(404).json({ error: true, message: 'Usuário não encontrado.' });
             }
@@ -177,83 +178,89 @@ class UsuarioController {
     }
 
     async editar(req, res) {
+
         /*
-             #swagger.tags = ['Usuario'],
-             #swagger.parameters = ['body'] ={
-               in: 'body',
-               description: 'Edita um usuário existente!',
-               schema: {
-            $nome: 'Diego Campos',
-            $email: 'diego.campos@hotmail.com',
-            $sexo: 'Masculino',
-            $senha: 'funcionando',
-            $data_nascimento: '1996-05-02',
-            $cep: '12345-678',
-            $rua: 'Rua Atualizada',
-            $numero: '456',
-            $complemento: 'Apto 2',
-            $bairro: 'Bairro Atualizado',
-            $cidade: 'Cidade Atualizada',
-            $estado: 'Estado Atualizado'
-            }   
-        }
-        */
+      #swagger.tags = ['Usuario']
+      #swagger.parameters['ID'] = {
+          in: 'path',
+          description: 'ID do usuário a ser atualizado',
+          required: true,
+          type: 'string'
+      }
+      #swagger.parameters['body'] = {
+          in: 'body',
+          description: 'Dados do usuário para atualização',
+          schema: {
+              $nome: 'John Doe',
+              $sexo: 'masculino',
+              $cpf: '98765432100',
+              $email: 'john@email.com',
+              $senha: '12345678',
+              $data_nascimento: '1984-11-25',
+              $cep: '12345678',
+              $rua: 'Rua das Cegonhas',
+              $numero: '123',
+              $complemento: 'Apto 45',
+              $bairro: 'Bairro Exemplo',
+              $cidade: 'Cidade Exemplo',
+              $estado: 'Estado Exemplo'
+          }
+      },
+      #swagger.responses[200] = { 
+          description: 'Usuário atualizado com sucesso!', 
+          schema: { 
+              message: 'Usuário atualizado com sucesso!', 
+              usuario: {
+                  $id: '1',
+                  $nome: 'John Doe',
+                  $email: 'john@email.com',
+                  $cpf: '98765432100',
+                  $sexo: 'masculino',
+                  $data_nascimento: '1984-11-25',
+                  $cep: '12345678',
+                  $rua: 'Rua das Cegonhas',
+                  $numero: '123',
+                  $complemento: 'Apto 45',
+                  $bairro: 'Bairro Exemplo',
+                  $cidade: 'Cidade Exemplo',
+                  $estado: 'Estado Exemplo'
+              }
+          }
+      },
+      #swagger.responses[400] = { description: 'Email já cadastrado!' },
+      #swagger.responses[422] = { description: 'Erro de validação nos dados do usuário.' },
+      #swagger.responses[404] = { description: 'Usuário não encontrado!' },
+      #swagger.responses[500] = { description: 'Não foi possível atualizar o usuário' }
+    */
+
+
         try {
             const { id } = req.params;
-            const {
-                nome,
-                email,
-                sexo,
-                senha,
-                data_nascimento,
-                cep,
-                rua,
-                numero,
-                complemento,
-                bairro,
-                cidade,
-                estado
-            } = req.body;
-
-
             const usuario = await Usuario.findByPk(id);
             if (!usuario) {
                 return res.status(404).json({ message: 'Usuário não encontrado!' });
             }
 
+            await usuarioUpdateSchema.validate(req.body, { abortEarly: false });
 
-            if (!nome) {
-                return res.status(400).json({ message: 'O nome é obrigatório' });
-            }
-
-            if (!email) {
-                return res.status(400).json({ message: 'O email é obrigatório' });
-            }
-
+            const { nome, email, sexo, senha, data_nascimento, cep, rua, numero, complemento, bairro, cidade, estado } = req.body;
 
             const usuarioCadastrado = await Usuario.findOne({ where: { email, id: { [Op.ne]: id } } });
             if (usuarioCadastrado) {
                 return res.status(400).json({ error: true, message: 'Email já cadastrado!' });
             }
 
-
             await usuario.update({
-                nome,
-                email,
-                sexo,
-                senha,
-                data_nascimento,
-                cep,
-                rua,
-                numero,
-                complemento,
-                bairro,
-                cidade,
-                estado
+                nome, email, sexo, senha, data_nascimento, cep, rua, numero, complemento, bairro, cidade, estado
             });
 
             res.json({ message: 'Usuário atualizado com sucesso!', usuario });
         } catch (error) {
+            if (error.name === 'ValidationError') {
+                const errors = error.inner.map(err => ({ field: err.path, message: err.message }));
+                return res.status(400).json({ errors });
+            }
+
             console.error(error.message);
             res.status(500).json({ error: 'Não foi possível atualizar o usuário' });
         }
