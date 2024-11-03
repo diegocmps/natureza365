@@ -16,56 +16,31 @@ class UsuarioController {
     async cadastrar(req, res) {
 
         /*
-          #swagger.tags = ['Usuario'],
-          #swagger.description = 'Cadastrar um novo usuário.'
-          #swagger.parameters['Usuario'] = {
-              in: 'body',
-              required: true,
-              schema: {
-                  type: 'object',
-                  properties: {
-                      nome: { type: 'string', example: 'João Silva' },
-                      email: { type: 'string', example: 'joao@exemplo.com' },
-                      cpf: { type: 'string', example: '12345678901' },
-                      sexo: { type: 'string', enum: ['masculino', 'feminino'], example: 'masculino' },
-                      senha: { type: 'string', example: 'senhaSegura123' },
-                      data_nascimento: { type: 'string', format: 'date', example: '1990-01-01' },
-                      cep: { type: 'string', example: '12345678' },
-                      rua: { type: 'string', example: 'Rua das Flores' },
-                      numero: { type: 'string', example: '123' },
-                      complemento: { type: 'string', example: 'Apto 101' },
-                      bairro: { type: 'string', example: 'Centro' },
-                      cidade: { type: 'string', example: 'São Paulo' },
-                      estado: { type: 'string', example: 'SP' }
-                  },
-                  required: ['nome', 'email', 'cpf', 'sexo', 'senha', 'data_nascimento', 'cep', 'rua', 'numero', 'bairro', 'cidade', 'estado']
-              }
-          }
-          #swagger.responses[201] = {
-              description: 'Usuário cadastrado com sucesso.',
-              schema: { $ref: '#/definitions/Usuario' }
-          }
-          #swagger.responses[400] = {
-              description: 'Erro de validação ou usuário já cadastrado.',
-              schema: {
-                  type: 'object',
-                  properties: {
-                      error: { type: 'boolean', example: true },
-                      message: { type: 'string', example: 'Email já cadastrado!' },
-                      errors: { type: 'array', items: { $ref: '#/definitions/ValidationError' } }
-                  }
-              }
-          }
-          #swagger.responses[500] = {
-              description: 'Erro interno do servidor.',
-              schema: {
-                  type: 'object',
-                  properties: {
-                      error: { type: 'string', example: 'Não foi possível cadastrar o usuário' }
-                  }
-              }
-          }
-        */
+    #swagger.tags = ['Cadastro de Usuário e Login'].
+    #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Campo para cadastro de dados do usuário',
+        schema: {
+            $nome: 'John Doe',
+            $email: 'john@email.com',
+            $cpf: '98765432100',
+            $sexo: 'masculino',
+            $senha: '12345678',
+            $data_nascimento: '1984-11-25',
+            $cep: '12345678',
+            $rua: 'Rua das Cegonhas',
+            $numero: '123',
+            $complemento: 'Apto 45',
+            $bairro: 'Bairro Exemplo',
+            $cidade: 'Cidade Exemplo',
+            $estado: 'Estado Exemplo'
+        }
+    },
+    #swagger.responses[201] = { description: 'Usuário cadastrado com sucesso.' },
+    #swagger.responses[400] = { description: 'Registro de dado obrigatório. Erros: [{ field: "email", message: "Email já cadastrado!" }, ...]' },
+    #swagger.responses[422] = { description: 'Informe o dado no formato correto. Erros: [{ field: "nome", message: "O nome é obrigatório" }, ...]' },
+    #swagger.responses[500] = { description: 'Não foi possível realizar o cadastro.' }
+*/
 
         try {
             await usuarioSchema.validate(req.body, { abortEarly: false });
@@ -102,7 +77,7 @@ class UsuarioController {
                 }
                 return res.status(400).json({ error: true, message: 'Erro de validação', errors });
             }
-            
+
 
             const usuario = await Usuario.create({
                 nome,
@@ -125,7 +100,7 @@ class UsuarioController {
         } catch (error) {
             if (error.name === 'ValidationError') {
                 const errors = error.inner.map(err => ({ field: err.path, message: err.message }));
-                return res.status(400).json({error: true, message: 'Erro de validação', errors });
+                return res.status(400).json({ error: true, message: 'Erro de validação', errors });
             }
 
             console.error(error.message);
@@ -205,65 +180,58 @@ class UsuarioController {
     async editar(req, res) {
 
         /*
-          #swagger.tags = ['Usuario'],
-          #swagger.description = 'Editar um usuário existente.'
-          #swagger.parameters['ID'] = {
-              in: 'path',
-              required: true,
-              description: 'ID do usuário a ser editado',
-              type: 'string'
+      #swagger.tags = ['Usuario']
+      #swagger.parameters['ID'] = {
+          in: 'path',
+          description: 'ID do usuário a ser atualizado',
+          required: true,
+          type: 'string'
+      }
+      #swagger.parameters['body'] = {
+          in: 'body',
+          description: 'Dados do usuário para atualização',
+          schema: {
+              $nome: 'John Doe',
+              $sexo: 'masculino',
+              $cpf: '98765432100',
+              $email: 'john@email.com',
+              $senha: '12345678',
+              $data_nascimento: '1984-11-25',
+              $cep: '12345678',
+              $rua: 'Rua das Cegonhas',
+              $numero: '123',
+              $complemento: 'Apto 45',
+              $bairro: 'Bairro Exemplo',
+              $cidade: 'Cidade Exemplo',
+              $estado: 'Estado Exemplo'
           }
-          #swagger.parameters['Usuario'] = {
-              in: 'body',
-              required: false,
-              schema: {
-                  type: 'object',
-                  properties: {
-                      nome: { type: 'string', example: 'João Silva' },
-                      email: { type: 'string', example: 'joao@exemplo.com' },
-                      cpf: { type: 'string', example: '12345678901' },
-                      sexo: { type: 'string', enum: ['masculino', 'feminino'], example: 'masculino' },
-                      senha: { type: 'string', example: 'senhaSegura123' },
-                      data_nascimento: { type: 'string', format: 'date', example: '1990-01-01' },
-                      cep: { type: 'string', example: '12345678' },
-                      rua: { type: 'string', example: 'Rua das Flores' },
-                      numero: { type: 'string', example: '123' },
-                      complemento: { type: 'string', example: 'Apto 101' },
-                      bairro: { type: 'string', example: 'Centro' },
-                      cidade: { type: 'string', example: 'São Paulo' },
-                      estado: { type: 'string', example: 'SP' }
-                  }
+      },
+      #swagger.responses[200] = { 
+          description: 'Usuário atualizado com sucesso!', 
+          schema: { 
+              message: 'Usuário atualizado com sucesso!', 
+              usuario: {
+                  $id: '1',
+                  $nome: 'John Doe',
+                  $email: 'john@email.com',
+                  $cpf: '98765432100',
+                  $sexo: 'masculino',
+                  $data_nascimento: '1984-11-25',
+                  $cep: '12345678',
+                  $rua: 'Rua das Cegonhas',
+                  $numero: '123',
+                  $complemento: 'Apto 45',
+                  $bairro: 'Bairro Exemplo',
+                  $cidade: 'Cidade Exemplo',
+                  $estado: 'Estado Exemplo'
               }
           }
-          #swagger.responses[200] = {
-              description: 'Usuário atualizado com sucesso.',
-              schema: { type: 'object', properties: { message: { type: 'string', example: 'Usuário atualizado com sucesso!' }, usuario: { $ref: '#/definitions/Usuario' } } }
-          }
-          #swagger.responses[404] = {
-              description: 'Usuário não encontrado.',
-              schema: { type: 'object', properties: { message: { type: 'string', example: 'Usuário não encontrado!' } } }
-          }
-          #swagger.responses[400] = {
-              description: 'Erro de validação ou email já cadastrado.',
-              schema: {
-                  type: 'object',
-                  properties: {
-                      error: { type: 'boolean', example: true },
-                      message: { type: 'string', example: 'Email já cadastrado!' },
-                      errors: { type: 'array', items: { $ref: '#/definitions/ValidationError' } }
-                  }
-              }
-          }
-          #swagger.responses[500] = {
-              description: 'Erro interno do servidor.',
-              schema: {
-                  type: 'object',
-                  properties: {
-                      error: { type: 'string', example: 'Não foi possível atualizar o usuário' }
-                  }
-              }
-          }
-        */
+      },
+      #swagger.responses[400] = { description: 'Email já cadastrado!' },
+      #swagger.responses[422] = { description: 'Erro de validação nos dados do usuário.' },
+      #swagger.responses[404] = { description: 'Usuário não encontrado!' },
+      #swagger.responses[500] = { description: 'Não foi possível atualizar o usuário' }
+    */
 
 
         try {
