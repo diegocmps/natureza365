@@ -1,9 +1,11 @@
 const bcrypt = require("bcryptjs");
+const Usuario = require("../../models/Usuario");
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (QueryInterface, Sequelize) => {
     const saltRounds = 10;
-    await queryInterface.bulkInsert("Usuarios", [
+
+    await Usuario.bulkCreate([
       {
         nome: "Raphaela Assis",
         email: "rapha.exemplo@hotmail.com",
@@ -18,8 +20,6 @@ module.exports = {
         bairro: "Campeche",
         cidade: "Florianópolis",
         estado: "SC",
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         nome: "Kauana Araujo",
@@ -35,8 +35,6 @@ module.exports = {
         bairro: "Ratones",
         cidade: "Florianópolis",
         estado: "SC",
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         nome: "Tiago Araujo",
@@ -52,8 +50,6 @@ module.exports = {
         bairro: "Arambaré",
         cidade: "Florianópolis",
         estado: "SC",
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         nome: "Maria Eduarda",
@@ -69,8 +65,6 @@ module.exports = {
         bairro: "Camaquã",
         cidade: "Florianópolis",
         estado: "SC",
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         nome: "Mario Alberto",
@@ -86,21 +80,23 @@ module.exports = {
         bairro: "Camaquã",
         cidade: "Florianópolis",
         estado: "SC",
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     ]);
   },
 
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete("Usuarios", {
-      email: [
-        "rapha.exemplo@hotmail.com",
-        "kaka.exemplo@hotmail.com",
-        "tiago.exemplo@hotmail.com",
-        "duda.exemplo@hotmail.com",
-        "mario.exemplo@hotmail.com",
-      ],
+  down: async (QueryInterface, Sequelize) => {
+    await Usuario.destroy({
+      where: {
+        email: [
+          "rapha.exemplo@hotmail.com",
+          "kaka.exemplo@hotmail.com",
+          "tiago.exemplo@hotmail.com",
+          "duda.exemplo@hotmail.com",
+          "mario.exemplo@hotmail.com",
+        ],
+      },
     });
   },
 };
+
+//teste
