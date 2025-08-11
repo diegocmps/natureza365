@@ -1,18 +1,18 @@
 const { config } = require("dotenv").config();
 
 module.exports = {
-  dialect: process.env.DIALECT,
-  host: process.env.HOST,
-  username: process.env.USERNAMEDB,
-  password: process.env.PASSWORDDB,
-  database: process.env.DATABASE,
-  port: process.env.PORT,
-  // dialectOptions: {
-  //   ssl: {
-  //     rejectUnauthorized: false,
-  //     require: true,
-  //   },
-  // },
+  dialect: process.env.DB_DIALECT,
+  host: process.env.DB_HOST,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  port: process.env.DB_PORT,
+  dialectOptions: {
+    ssl: {
+      rejectUnauthorized: false,
+      require: true,
+    },
+  },
   pool: {
     max: 5,
     min: 0,
@@ -20,3 +20,5 @@ module.exports = {
     idle: 10000, // idle timeout in milliseconds
   },
 };
+
+//teste
