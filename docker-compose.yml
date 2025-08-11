@@ -1,4 +1,3 @@
-
 services:
   db:
     image: postgres
@@ -18,10 +17,19 @@ services:
       - db
     environment:
       HOST: db
-
     ports:
       - "3000:3000"
     command: npm run start:dev
+    volumes:
+      - .:/app/
+      - /app/node_modules
+  sequelize:
+    build: .
+    depends_on:
+      - db
+    environment:
+      HOST: db
+    command: npx sequelize-cli db:seed:all
     volumes:
       - .:/app/
       - /app/node_modules
