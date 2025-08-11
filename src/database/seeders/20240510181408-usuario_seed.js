@@ -5,7 +5,7 @@ module.exports = {
   up: async (QueryInterface, Sequelize) => {
     const saltRounds = 10;
 
-    await Usuario.bulkCreate([
+    const usuarios = [
       {
         nome: "Raphaela Assis",
         email: "rapha.exemplo@hotmail.com",
@@ -81,7 +81,14 @@ module.exports = {
         cidade: "Florianópolis",
         estado: "SC",
       },
-    ]);
+    ];
+
+    for (const usuario of usuarios) {
+      const existe = await Usuario.findOne({ where: { email: usuario.email } });
+      if (!existe) {
+        await Usuario.create(usuario);
+      }
+    }
   },
 
   down: async (QueryInterface, Sequelize) => {
@@ -98,5 +105,3 @@ module.exports = {
     });
   },
 };
-
-//teste

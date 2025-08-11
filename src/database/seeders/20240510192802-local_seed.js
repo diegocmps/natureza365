@@ -1,9 +1,8 @@
-const { QueryInterface, Sequelize } = require("sequelize");
 const Local = require("../../models/Local");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert("Locais", [
+    const locais = [
       {
         nome: "Trilha Morro das Aranhas",
         descricao:
@@ -82,12 +81,28 @@ module.exports = {
         latitude: -27.816341955118446,
         longitude: -48.56085523453938,
       },
-    ]);
+    ];
+
+    for (const local of locais) {
+      const existe = await Local.findOne({ where: { nome: local.nome } });
+      if (!existe) {
+        await Local.create(local);
+      }
+    }
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete("locais", null, {});
+    await Local.destroy({
+      where: {
+        nome: [
+          "Trilha Morro das Aranhas",
+          "Trilha Lagoinha do Leste",
+          "Trilha Soldados de Sebold",
+          "Trilha Costeira do Zimbros",
+          "Pico do Cambirela",
+          "Trilha de Naufragados",
+        ],
+      },
+    });
   },
 };
-
-//teste
